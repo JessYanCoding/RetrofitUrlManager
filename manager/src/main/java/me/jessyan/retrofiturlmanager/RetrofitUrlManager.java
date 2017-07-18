@@ -13,6 +13,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
+ * RetrofitUrlManager 以简洁的 Api ,让 Retrofit 不仅支持多 BaseUrl
+ * 还可以在 App 运行时动态切换任意 BaseUrl,在多 BaseUrl 场景下也不会影响到其他不需要切换的 BaseUrl
+ * <p>
  * Created by jess on 17/07/2017 14:29
  * Contact with jess.yan.effort@gmail.com
  */
@@ -75,6 +78,8 @@ public class RetrofitUrlManager {
     }
 
     /**
+     * 对 {@link Request} 进行一些必要的加工
+     *
      * @param request
      * @return
      */
@@ -96,18 +101,40 @@ public class RetrofitUrlManager {
 
     }
 
+    /**
+     * 管理器是否在运行
+     *
+     * @return
+     */
     public boolean isRun() {
         return this.isRun;
     }
 
+    /**
+     * 控制管理器是否运行,在每个域名地址都已经确定,不需要再动态更改时可设置为 false
+     *
+     * @param run
+     */
     public void setRun(boolean run) {
         this.isRun = run;
     }
 
+    /**
+     * 存放 Domain 的映射关系
+     *
+     * @param domainName
+     * @param domainUrl
+     */
     public void putDomain(String domainName, String domainUrl) {
         mDomainNameHub.put(domainName, domainUrl);
     }
 
+    /**
+     * 取出对应 DomainName 的 Url
+     *
+     * @param domainName
+     * @return
+     */
     public String fetchDomain(String domainName) {
         return mDomainNameHub.get(domainName);
     }
@@ -138,6 +165,12 @@ public class RetrofitUrlManager {
     }
 
 
+    /**
+     * 从 {@link Request#header(String)} 中取出 DomainName
+     *
+     * @param request
+     * @return
+     */
     private String obtainDomainNameFromHeaders(Request request) {
         List<String> headers = request.headers(DOMAIN_NAME);
         if (headers == null || headers.size() == 0)
