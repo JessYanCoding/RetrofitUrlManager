@@ -1,12 +1,14 @@
 package me.jessyan.retrofiturlmanager;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,6 +23,7 @@ import okhttp3.Response;
  */
 
 public class RetrofitUrlManager {
+    public static final String TAG = "RetrofitUrlManager";
     public static final boolean DEPENDENCY_OKHTTP;
     private static final String DOMAIN_NAME = "Domain-Name";
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
@@ -94,9 +97,13 @@ public class RetrofitUrlManager {
                     .removeHeader(DOMAIN_NAME)
                     .build();
 
+        HttpUrl newUrl = mUrlParser.parseUrl(domainUrl, request.url());
+
+        Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
+
         return request.newBuilder()
                 .removeHeader(DOMAIN_NAME)
-                .url(mUrlParser.parseUrl(domainUrl, request.url()))
+                .url(newUrl)
                 .build();
 
     }
