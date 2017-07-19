@@ -12,12 +12,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static me.jessyan.retrofiturlmanager.demo.api.Api.APP_DEFAULT_DOMAIN;
-import static me.jessyan.retrofiturlmanager.demo.api.Api.APP_DOUBAN_DOMAIN;
-import static me.jessyan.retrofiturlmanager.demo.api.Api.APP_GANK_DOMAIN;
-import static me.jessyan.retrofiturlmanager.demo.api.Api.APP_GETHUB_DOMAIN;
-import static me.jessyan.retrofiturlmanager.demo.api.Api.DOUBAN_DOMAIN_NAME;
-import static me.jessyan.retrofiturlmanager.demo.api.Api.GANK_DOMAIN_NAME;
-import static me.jessyan.retrofiturlmanager.demo.api.Api.GITHUB_DOMAIN_NAME;
 
 /**
  * Created by jess on 18/07/2017 17:03
@@ -54,11 +48,6 @@ public class NetWorkManager {
         this.mOneApiService = mRetrofit.create(OneApiService.class);
         this.mTwoApiService = mRetrofit.create(TwoApiService.class);
         this.mThreeApiService = mRetrofit.create(ThreeApiService.class);
-
-        //将每个 BaseUrl 进行初始化,运行时可以随时改变 DOMAIN_NAME 对应的值,从而达到改变 BaseUrl 的效果
-        RetrofitUrlManager.getInstance().putDomain(GITHUB_DOMAIN_NAME, APP_GETHUB_DOMAIN);
-        RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, APP_GANK_DOMAIN);
-        RetrofitUrlManager.getInstance().putDomain(DOUBAN_DOMAIN_NAME, APP_DOUBAN_DOMAIN);
     }
 
     public OkHttpClient getOkHttpClient() {

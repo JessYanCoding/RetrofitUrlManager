@@ -17,9 +17,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginTop="5dp"
         android:paddingLeft="5dp"
         >
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="2dp"
-            android:text=" @GET('/users') \nObservable<ResponseBody> getUsers(@Query('since') int lastIdQueried, @Query('per_page') int perPage);"
+            android:text=" @GET('/users') \nObservable\u003cResponseBody\u003e getUsers(@Query('since') int lastIdQueried, @Query('per_page') int perPage);"
             android:textStyle="bold"
             />
 
@@ -47,6 +47,7 @@
                 />
 
             <EditText
+                android:id="@+id/et_url1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -56,18 +57,20 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/bt_request1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="request"
             />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginTop="5dp"
         android:paddingLeft="5dp"
         >
 
@@ -75,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="2dp"
-            android:text=" @GET('/api/data/Android/{size}/{page}') \nObservable<ResponseBody> getData(@Path('size') int size, @Path('page') int page);"
+            android:text=" @GET('/api/data/Android/{size}/{page}') \nObservable\u003cResponseBody\u003e getData(@Path('size') int size, @Path('page') int page);"
             android:textStyle="bold"
             />
 
@@ -95,6 +98,7 @@
                 />
 
             <EditText
+                android:id="@+id/et_url2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -104,18 +108,20 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/bt_request2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="request"
             />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginTop="5dp"
         android:paddingLeft="5dp"
         >
 
@@ -123,7 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="2dp"
-            android:text=" @GET('/v2/book/{id}') \nObservable<ResponseBody> getBook(@Path('id') int id);"
+            android:text=" @GET('/v2/book/{id}') \nObservable\u003cResponseBody\u003e getBook(@Path('id') int id);"
             android:textStyle="bold"
             />
 
@@ -143,6 +149,7 @@
                 />
 
             <EditText
+                android:id="@+id/et_url3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -152,21 +159,29 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/bt_request3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="request"
             />
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c9c9c9"
+        />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="5dp"
         android:paddingLeft="5dp"
         >
-        <TextView
 
+        <TextView
+            android:id="@+id/display"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
