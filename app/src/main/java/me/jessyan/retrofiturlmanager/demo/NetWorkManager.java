@@ -1,12 +1,19 @@
 package me.jessyan.retrofiturlmanager.demo;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import me.jessyan.retrofiturlmanager.demo.api.OneApiService;
 import me.jessyan.retrofiturlmanager.demo.api.ThreeApiService;
 import me.jessyan.retrofiturlmanager.demo.api.TwoApiService;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -23,6 +30,7 @@ public class NetWorkManager {
     private OneApiService mOneApiService;
     private TwoApiService mTwoApiService;
     private ThreeApiService mThreeApiService;
+    private Handler mHandler;
 
     private static class NetWorkManagerHolder {
         private static final NetWorkManager INSTANCE = new NetWorkManager();
@@ -33,7 +41,20 @@ public class NetWorkManager {
     }
 
     private NetWorkManager() {
+        mHandler = new Handler(Looper.getMainLooper());
         this.mOkHttpClient = RetrofitUrlManager.getInstance().with(new OkHttpClient.Builder()) //RetrofitUrlManager 初始化
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(final Chain chain) throws IOException {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(BaseApplication.getApplication(), chain.request().url().toString(), Toast.LENGTH_SHORT);
+                            }
+                        });
+                        return chain.proceed(chain.request());
+                    }
+                })
                 .readTimeout(5, TimeUnit.SECONDS)
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .build();

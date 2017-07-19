@@ -1,5 +1,6 @@
 package me.jessyan.retrofiturlmanager.demo;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mUrl1;
     private EditText mUrl2;
     private EditText mUrl3;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         mUrl1 = (EditText) findViewById(R.id.et_url1);
         mUrl2 = (EditText) findViewById(R.id.et_url2);
         mUrl3 = (EditText) findViewById(R.id.et_url3);
+        mProgressDialog = new ProgressDialog(this);
+        mUrl1.setSelection(mUrl1.getText().toString().length());
     }
 
 
@@ -51,8 +57,22 @@ public class MainActivity extends AppCompatActivity {
                 NetWorkManager
                         .getInstance()
                         .getOneApiService()
-                        .getUsers(1, 10).subscribeOn(Schedulers.io())
+                        .getUsers(1, 10)
+                        .subscribeOn(Schedulers.io())
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.show();
+                            }
+                        })
+                        .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doAfterTerminate(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                mProgressDialog.dismiss();
+                            }
+                        })
                         .subscribe(new Consumer<ResponseBody>() {
                             @Override
                             public void accept(ResponseBody response) throws Exception {
@@ -64,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void accept(Throwable throwable) throws Exception {
                                 throwable.printStackTrace();
+                                mDisplay.setText(throwable.getMessage());
                             }
                         });
             }
@@ -77,9 +98,23 @@ public class MainActivity extends AppCompatActivity {
                 }
                 NetWorkManager
                         .getInstance()
-                        .getTwoApiService().getData(10, 1)
+                        .getTwoApiService()
+                        .getData(10, 1)
                         .subscribeOn(Schedulers.io())
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.show();
+                            }
+                        })
+                        .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doAfterTerminate(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                mProgressDialog.dismiss();
+                            }
+                        })
                         .subscribe(new Consumer<ResponseBody>() {
                             @Override
                             public void accept(ResponseBody response) throws Exception {
@@ -91,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void accept(Throwable throwable) throws Exception {
                                 throwable.printStackTrace();
+                                mDisplay.setText(throwable.getMessage());
                             }
                         });
             }
@@ -107,7 +143,20 @@ public class MainActivity extends AppCompatActivity {
                         .getThreeApiService()
                         .getBook(1220562)
                         .subscribeOn(Schedulers.io())
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                mProgressDialog.show();
+                            }
+                        })
+                        .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doAfterTerminate(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                mProgressDialog.dismiss();
+                            }
+                        })
                         .subscribe(new Consumer<ResponseBody>() {
                             @Override
                             public void accept(ResponseBody response) throws Exception {
@@ -119,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void accept(Throwable throwable) throws Exception {
                                 throwable.printStackTrace();
+                                mDisplay.setText(throwable.getMessage());
                             }
                         });
             }
