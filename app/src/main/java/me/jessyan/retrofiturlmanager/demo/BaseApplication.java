@@ -17,19 +17,14 @@ import static me.jessyan.retrofiturlmanager.demo.api.Api.GITHUB_DOMAIN_NAME;
  */
 
 public class BaseApplication extends Application {
-    private static Application mApplication;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mApplication = this;
         //将每个 BaseUrl 进行初始化,运行时可以随时改变 DOMAIN_NAME 对应的值,从而达到改变 BaseUrl 的效果
         RetrofitUrlManager.getInstance().putDomain(GITHUB_DOMAIN_NAME, APP_GETHUB_DOMAIN);
         RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, APP_GANK_DOMAIN);
         RetrofitUrlManager.getInstance().putDomain(DOUBAN_DOMAIN_NAME, APP_DOUBAN_DOMAIN);
     }
 
-    public static Application getApplication() {
-        return mApplication;
-    }
 }

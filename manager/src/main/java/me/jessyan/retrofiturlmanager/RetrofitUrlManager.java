@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class RetrofitUrlManager {
     private boolean isRun = true; //默认开始运行,可以随时停止运行,比如你在 App 启动后已经不需要在动态切换 baseurl 了
     private final Map<String, String> mDomainNameHub = new HashMap<>();
     private final Interceptor mInterceptor;
+    private final List<onUrlChangeListener> mListeners = new ArrayList<>();
     private UrlParser mUrlParser;
 
     static {
@@ -101,6 +103,13 @@ public class RetrofitUrlManager {
 
         Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
 
+        Object[] listeners = listenersToArray();
+        if (listeners != null) {
+            for (int i = 0; i < listeners.length; i++) {
+                ((onUrlChangeListener) listeners[i]).onUrlChange(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
+            }
+        }
+
         return request.newBuilder()
                 .removeHeader(DOMAIN_NAME)
                 .url(newUrl)
@@ -133,7 +142,9 @@ public class RetrofitUrlManager {
      * @param domainUrl
      */
     public void putDomain(String domainName, String domainUrl) {
-        mDomainNameHub.put(domainName, domainUrl);
+        synchronized (mDomainNameHub) {
+            mDomainNameHub.put(domainName, domainUrl);
+        }
     }
 
     /**
@@ -147,7 +158,9 @@ public class RetrofitUrlManager {
     }
 
     public void removeDomain(String domainName) {
-        mDomainNameHub.remove(domainName);
+        synchronized (mDomainNameHub) {
+            mDomainNameHub.remove(domainName);
+        }
     }
 
     public void clearAllDomain() {
@@ -169,6 +182,38 @@ public class RetrofitUrlManager {
      */
     public void setUrlParser(UrlParser parser) {
         this.mUrlParser = parser;
+    }
+
+    /**
+     * 注册当 Url 的 BaseUrl 被改变时会被回调的监听器
+     *
+     * @param listener
+     */
+    public void registerUrlChangeListener(onUrlChangeListener listener) {
+        synchronized (mListeners) {
+            mListeners.add(listener);
+        }
+    }
+
+    /**
+     * 注销当 Url 的 BaseUrl 被改变时会被回调的监听器
+     *
+     * @param listener
+     */
+    public void unregisterUrlChangeListener(onUrlChangeListener listener) {
+        synchronized (mListeners) {
+            mListeners.remove(listener);
+        }
+    }
+
+    private Object[] listenersToArray() {
+        Object[] listeners = null;
+        synchronized (mListeners) {
+            if (mListeners.size() > 0) {
+                listeners = mListeners.toArray();
+            }
+        }
+        return listeners;
     }
 
 

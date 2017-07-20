@@ -7,13 +7,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
+import me.jessyan.retrofiturlmanager.onUrlChangeListener;
+import okhttp3.HttpUrl;
 import okhttp3.ResponseBody;
 
 import static me.jessyan.retrofiturlmanager.demo.api.Api.DOUBAN_DOMAIN_NAME;
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mUrl2;
     private EditText mUrl3;
     private ProgressDialog mProgressDialog;
+    private ChangeListener mListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initListener() {
+        this.mListener = new ChangeListener();
+        //如果有需要可以注册监听器,当一个 Url 的 BaseUrl 被新的 Url 替代,则会会调这个监听器
+        RetrofitUrlManager.getInstance().registerUrlChangeListener(mListener);
+
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
-                if (!url.equals(mUrl1.getText().toString())) {
+                if (!url.equals(mUrl1.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GITHUB_DOMAIN_NAME, mUrl1.getText().toString());
                 }
                 NetWorkManager
@@ -89,11 +98,12 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+
         findViewById(R.id.bt_request2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
-                if (!url.equals(mUrl2.getText().toString())) {
+                if (!url.equals(mUrl2.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, mUrl2.getText().toString());
                 }
                 NetWorkManager
@@ -131,11 +141,12 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+
         findViewById(R.id.bt_request3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url = RetrofitUrlManager.getInstance().fetchDomain(DOUBAN_DOMAIN_NAME);
-                if (!url.equals(mUrl3.getText().toString())) {
+                if (!url.equals(mUrl3.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(DOUBAN_DOMAIN_NAME, mUrl3.getText().toString());
                 }
                 NetWorkManager
@@ -174,6 +185,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RetrofitUrlManager.getInstance().unregisterUrlChangeListener(mListener); //记住注销监听器
+    }
+
+    private class ChangeListener implements onUrlChangeListener {
+
+        @Override
+        public void onUrlChange(final HttpUrl newUrl, HttpUrl oldUrl) {
+            Observable.just(1)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object o) throws Exception {
+                            Toast.makeText(getApplicationContext(), "The newUrl is { " + newUrl.toString() + " }", Toast.LENGTH_LONG).show();
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                        }
+                    });
+        }
     }
 }
