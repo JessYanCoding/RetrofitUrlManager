@@ -6,7 +6,6 @@
 
 ## Let Retrofit support multiple baseUrl and can be change the baseUrl at runtime.
 
-[中文说明](README-zh.md)
 
 ## Download
 ``` gradle
@@ -16,7 +15,7 @@
 ## Usage
 ### Initialize
 ``` java
- // When building OkHttpClient, the OkHttpClient.Builder() is passed to the with() method to initialize the configuration
+ // 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
  OkHttpClient = RetrofitUrlManager.getInstance().with(new OkHttpClient.Builder())
                 .build();
 ```
@@ -24,7 +23,7 @@
 ### Step 1
 ``` java
  public interface ApiService {
-     @Headers({"Domain-Name: douban}) // add the Domain-Name header
+     @Headers({"Domain-Name: douban}) // 加上 Domain-Name header
      @GET("/v2/book/{id}")
      Observable<ResponseBody> getBook(@Path("id") int id);
 }
@@ -33,7 +32,7 @@
 
 ### Step 2
 ``` java
- // You can change BaseUrl at any time while App is running (The interface that declared the Domain-Name header)
+ // 可在 App 运行时,随时切换 BaseUrl (指定了 Domain-Name header 的接口)
  RetrofitUrlManager.getInstance().putDomain("douban", "https://api.douban.com");
 ```
 
