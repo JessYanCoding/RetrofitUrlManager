@@ -8,6 +8,9 @@
 
 [中文说明](README-zh.md)
 
+## Overview
+![overview](art/overview.gif)
+
 ## Download
 ``` gradle
  compile 'me.jessyan:retrofit-url-manager:1.0.2'

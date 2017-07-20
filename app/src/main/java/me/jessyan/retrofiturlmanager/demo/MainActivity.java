@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) throws Exception {
-                            Toast.makeText(getApplicationContext(), "The newUrl is { " + newUrl.toString() + " }", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "The newUrl is { " + newUrl.toString() + " }", Toast.LENGTH_SHORT).show();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
