@@ -27,7 +27,7 @@
 ### Step 1
 ``` java
  public interface ApiService {
-     @Headers({"Domain-Name: douban}) // add the Domain-Name header
+     @Headers({"Domain-Name: douban}) // Add the Domain-Name header
      @GET("/v2/book/{id}")
      Observable<ResponseBody> getBook(@Path("id") int id);
 }

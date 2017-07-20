@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         this.mListener = new ChangeListener();
         //如果有需要可以注册监听器,当一个 Url 的 BaseUrl 被新的 Url 替代,则会会调这个监听器
         RetrofitUrlManager.getInstance().registerUrlChangeListener(mListener);
+        //如果你已经确定了最终的 BaseUrl ,不需要在动态改变 BaseUrl ,请 RetrofitUrlManager.getInstance().setRun(false);
 
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
