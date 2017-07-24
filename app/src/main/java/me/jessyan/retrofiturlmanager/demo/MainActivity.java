@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
-                if (!url.equals(mUrl1.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                HttpUrl url = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
+                if (url == null || !url.equals(HttpUrl.parse(mUrl1.getText().toString()))) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GITHUB_DOMAIN_NAME, mUrl1.getText().toString());
                 }
                 NetWorkManager
@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
-                if (!url.equals(mUrl2.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                HttpUrl url = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
+                if (url == null || !url.equals(HttpUrl.parse(mUrl2.getText().toString()))) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, mUrl2.getText().toString());
                 }
                 NetWorkManager
@@ -146,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = RetrofitUrlManager.getInstance().fetchDomain(DOUBAN_DOMAIN_NAME);
-                if (!url.equals(mUrl3.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                HttpUrl url = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
+                if (url == null || !url.equals(HttpUrl.parse(mUrl3.getText().toString()))) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(DOUBAN_DOMAIN_NAME, mUrl3.getText().toString());
                 }
                 NetWorkManager
