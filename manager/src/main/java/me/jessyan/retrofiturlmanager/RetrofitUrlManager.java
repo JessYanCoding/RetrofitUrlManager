@@ -31,7 +31,7 @@ public class RetrofitUrlManager {
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
 
     private boolean isRun = true; //默认开始运行,可以随时停止运行,比如你在 App 启动后已经不需要在动态切换 baseurl 了
-    private final Map<String, HttpUrl> mDomainNameHub = new HashMap<>();
+    private final Map<String, DomainHolder> mDomainNameHub = new HashMap<>();
     private final Interceptor mInterceptor;
     private final List<onUrlChangeListener> mListeners = new ArrayList<>();
     private UrlParser mUrlParser;
@@ -90,32 +90,39 @@ public class RetrofitUrlManager {
      * @return
      */
     public Request processRequest(Request request) {
-        boolean hasDomainHeader;
-        HttpUrl newUrl = null;
+
+        Request.Builder newBuilder = request.newBuilder();
+
         String domainName = obtainDomainNameFromHeaders(request);
 
-        hasDomainHeader = !TextUtils.isEmpty(domainName) && (newUrl = fetchDomain(domainName)) != null;
-        if (!hasDomainHeader) {
-            // 如果header中没有配置，再判断有没有配置全局的url
-            newUrl = fetchDomain(GLOBAL_DOMAIN_NAME);
-            if (null == newUrl) {
-                return request;
-            }
+        DomainHolder holder;
+
+        // 如果有header，获取header中配置的url，否则检查全局的url，未找到则为null
+        if (!TextUtils.isEmpty(domainName)) {
+            holder = fetchDomain(domainName);
+            newBuilder.removeHeader(DOMAIN_NAME);
+        } else {
+            holder = fetchDomain(GLOBAL_DOMAIN_NAME);
         }
 
-        Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
+        if (null != holder) {
+            HttpUrl newUrl = mUrlParser.parseUrl(holder.getDomain(), request.url());
+            Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
 
-        Object[] listeners = listenersToArray();
-        if (listeners != null) {
-            for (int i = 0; i < listeners.length; i++) {
-                ((onUrlChangeListener) listeners[i]).onUrlChange(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
+            Object[] listeners = listenersToArray();
+            if (listeners != null) {
+                for (int i = 0; i < listeners.length; i++) {
+                    ((onUrlChangeListener) listeners[i]).onUrlChange(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
+                }
             }
+
+            return request.newBuilder()
+                    .url(newUrl)
+                    .build();
         }
 
-        return request.newBuilder()
-                .removeHeader(DOMAIN_NAME)
-                .url(newUrl)
-                .build();
+        return newBuilder.build();
+
     }
 
     /**
@@ -143,7 +150,7 @@ public class RetrofitUrlManager {
      */
     public void setGlobalDomain(String url) {
         synchronized (mDomainNameHub) {
-            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, mUrlParser.parseUrl(url));
+            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, new DomainHolder(url));
         }
     }
 
@@ -164,7 +171,7 @@ public class RetrofitUrlManager {
      */
     public void putDomain(String domainName, String domainUrl) {
         synchronized (mDomainNameHub) {
-            mDomainNameHub.put(domainName, mUrlParser.parseUrl(domainUrl));
+            mDomainNameHub.put(domainName, new DomainHolder(domainUrl));
         }
     }
 
@@ -174,7 +181,7 @@ public class RetrofitUrlManager {
      * @param domainName
      * @return
      */
-    public HttpUrl fetchDomain(String domainName) {
+    public DomainHolder fetchDomain(String domainName) {
         return mDomainNameHub.get(domainName);
     }
 

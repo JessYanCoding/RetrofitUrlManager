@@ -15,6 +15,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import me.jessyan.retrofiturlmanager.DomainHolder;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import me.jessyan.retrofiturlmanager.onUrlChangeListener;
 import okhttp3.HttpUrl;
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HttpUrl url = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
-                if (url == null || !url.equals(HttpUrl.parse(mUrl1.getText().toString()))) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                DomainHolder holder = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
+                if (holder == null || !holder.getUrlStr().equals(mUrl1.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GITHUB_DOMAIN_NAME, mUrl1.getText().toString());
                 }
                 NetWorkManager
@@ -103,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HttpUrl url = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
-                if (url == null || !url.equals(HttpUrl.parse(mUrl2.getText().toString()))) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                DomainHolder holder = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
+                if (holder == null || !holder.getUrlStr().equals(mUrl2.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, mUrl2.getText().toString());
                 }
                 NetWorkManager
@@ -146,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HttpUrl url = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
-                if (url == null || !url.equals(HttpUrl.parse(mUrl3.getText().toString()))) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                DomainHolder holder = RetrofitUrlManager.getInstance().fetchDomain(DOUBAN_DOMAIN_NAME);
+                if (holder == null || !holder.getUrlStr().equals(mUrl3.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(DOUBAN_DOMAIN_NAME, mUrl3.getText().toString());
                 }
                 NetWorkManager

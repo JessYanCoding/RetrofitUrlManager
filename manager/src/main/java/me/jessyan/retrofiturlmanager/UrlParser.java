@@ -18,5 +18,5 @@ public interface UrlParser {
      * @param domainUrl
      * @return
      */
-    HttpUrl parseUrl(String domainUrl);
+    HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url);
 }
