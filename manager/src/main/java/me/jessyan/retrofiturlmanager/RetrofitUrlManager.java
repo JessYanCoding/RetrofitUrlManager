@@ -24,13 +24,14 @@ import okhttp3.Response;
  */
 
 public class RetrofitUrlManager {
-    public static final String TAG = "RetrofitUrlManager";
-    public static final boolean DEPENDENCY_OKHTTP;
+    private static final String TAG = "RetrofitUrlManager";
+    private static final boolean DEPENDENCY_OKHTTP;
     private static final String DOMAIN_NAME = "Domain-Name";
+    private static final String GLOBAL_DOMAIN_NAME = "me.jessyan.retrofiturlmanager.globalDomainName";
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
 
     private boolean isRun = true; //默认开始运行,可以随时停止运行,比如你在 App 启动后已经不需要在动态切换 baseurl 了
-    private final Map<String, String> mDomainNameHub = new HashMap<>();
+    private final Map<String, DomainHolder> mDomainNameHub = new HashMap<>();
     private final Interceptor mInterceptor;
     private final List<onUrlChangeListener> mListeners = new ArrayList<>();
     private UrlParser mUrlParser;
@@ -60,14 +61,13 @@ public class RetrofitUrlManager {
                 return chain.proceed(processRequest(chain.request()));
             }
         };
-
     }
 
     private static class RetrofitUrlManagerHolder {
         private static final RetrofitUrlManager INSTANCE = new RetrofitUrlManager();
     }
 
-    public static final RetrofitUrlManager getInstance() {
+    public static RetrofitUrlManager getInstance() {
         return RetrofitUrlManagerHolder.INSTANCE;
     }
 
@@ -89,31 +89,38 @@ public class RetrofitUrlManager {
      * @return
      */
     public Request processRequest(Request request) {
+
+        Request.Builder newBuilder = request.newBuilder();
+
         String domainName = obtainDomainNameFromHeaders(request);
-        if (TextUtils.isEmpty(domainName))// headers中没有 Domain-Name 就表示不需要处理
-            return request;
 
-        String domainUrl = fetchDomain(domainName);
-        if (TextUtils.isEmpty(domainUrl))// DomainNameHub 中没有给 DomainName 映射对应的 DomainUrl 则不处理
-            return request.newBuilder()
-                    .removeHeader(DOMAIN_NAME)
-                    .build();
+        DomainHolder holder;
 
-        HttpUrl newUrl = mUrlParser.parseUrl(domainUrl, request.url());
-
-        Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
-
-        Object[] listeners = listenersToArray();
-        if (listeners != null) {
-            for (int i = 0; i < listeners.length; i++) {
-                ((onUrlChangeListener) listeners[i]).onUrlChange(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
-            }
+        // 如果有header，获取header中配置的url，否则检查全局的url，未找到则为null
+        if (!TextUtils.isEmpty(domainName)) {
+            holder = fetchDomain(domainName);
+            newBuilder.removeHeader(DOMAIN_NAME);
+        } else {
+            holder = fetchDomain(GLOBAL_DOMAIN_NAME);
         }
 
-        return request.newBuilder()
-                .removeHeader(DOMAIN_NAME)
-                .url(newUrl)
-                .build();
+        if (null != holder) {
+            HttpUrl newUrl = mUrlParser.parseUrl(holder.getDomain(), request.url());
+            Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
+
+            Object[] listeners = listenersToArray();
+            if (listeners != null) {
+                for (int i = 0; i < listeners.length; i++) {
+                    ((onUrlChangeListener) listeners[i]).onUrlChange(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
+                }
+            }
+
+            return request.newBuilder()
+                    .url(newUrl)
+                    .build();
+        }
+
+        return newBuilder.build();
 
     }
 
@@ -136,6 +143,30 @@ public class RetrofitUrlManager {
     }
 
     /**
+     * 全局动态替换baseUrl，优先级： Header中配置的url > 全局配置的url
+     *
+     * @param url
+     */
+    public void setGlobalDomain(String url) {
+        synchronized (mDomainNameHub) {
+            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, new DomainHolder(url));
+        }
+    }
+
+    public DomainHolder getGlobalDomain() {
+        return mDomainNameHub.get(GLOBAL_DOMAIN_NAME);
+    }
+
+    /**
+     * 移除动态设置的全局url
+     */
+    public void removeGlobalDomain() {
+        synchronized (mDomainNameHub) {
+            mDomainNameHub.remove(GLOBAL_DOMAIN_NAME);
+        }
+    }
+
+    /**
      * 存放 Domain 的映射关系
      *
      * @param domainName
@@ -143,7 +174,7 @@ public class RetrofitUrlManager {
      */
     public void putDomain(String domainName, String domainUrl) {
         synchronized (mDomainNameHub) {
-            mDomainNameHub.put(domainName, domainUrl);
+            mDomainNameHub.put(domainName, new DomainHolder(domainUrl));
         }
     }
 
@@ -153,7 +184,7 @@ public class RetrofitUrlManager {
      * @param domainName
      * @return
      */
-    public String fetchDomain(String domainName) {
+    public DomainHolder fetchDomain(String domainName) {
         return mDomainNameHub.get(domainName);
     }
 

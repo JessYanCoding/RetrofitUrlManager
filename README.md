@@ -40,6 +40,12 @@
  RetrofitUrlManager.getInstance().putDomain("douban", "https://api.douban.com");
 ```
 
+### If you want to change the global url:
+```java
+ // BaseUrl configured in the Domain-Name header will override BaseUrl in the global setting
+ RetrofitUrlManager.getInstance().setGlobalDomain(“your url”);
+
+```
 
 ## About Me
 * **Email**: <jess.yan.effort@gmail.com>
