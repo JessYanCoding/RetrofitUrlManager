@@ -18,4 +18,9 @@ public interface OneApiService {
     @Headers({DOMAIN_NAME_HEADER + GITHUB_DOMAIN_NAME}) //如果不需要多个 BaseUrl ,继续使用初始化时传入 Retrofit 中的默认 BaseUrl ,就不要加上 DOMAIN_NAME_HEADER 这个 Header
     @GET("/users") // 可以通过在注解里给全路径达到使用不同的 BaseUrl ,但是这样无法在 App 运行时动态切换 BaseUrl
     Observable<ResponseBody> getUsers(@Query("since") int lastIdQueried, @Query("per_page") int perPage);
+
+    // 切换Url的优先级: DomainHeader中的将覆盖全局的Url
+    // 这里不配置DomainHeader，将只受到设置的全局url的影响,没有全局Url将请求原始的Url
+    @GET("/okhttp-progress")// 这里随便写一个，just for test
+    Observable<ResponseBody> requestDefault();
 }

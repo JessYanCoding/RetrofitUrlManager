@@ -24,8 +24,8 @@ import okhttp3.Response;
  */
 
 public class RetrofitUrlManager {
-    public static final String TAG = "RetrofitUrlManager";
-    public static final boolean DEPENDENCY_OKHTTP;
+    private static final String TAG = "RetrofitUrlManager";
+    private static final boolean DEPENDENCY_OKHTTP;
     private static final String DOMAIN_NAME = "Domain-Name";
     private static final String GLOBAL_DOMAIN_NAME = "me.jessyan.retrofiturlmanager.globalDomainName";
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
@@ -61,14 +61,13 @@ public class RetrofitUrlManager {
                 return chain.proceed(processRequest(chain.request()));
             }
         };
-
     }
 
     private static class RetrofitUrlManagerHolder {
         private static final RetrofitUrlManager INSTANCE = new RetrofitUrlManager();
     }
 
-    public static final RetrofitUrlManager getInstance() {
+    public static RetrofitUrlManager getInstance() {
         return RetrofitUrlManagerHolder.INSTANCE;
     }
 
@@ -152,6 +151,10 @@ public class RetrofitUrlManager {
         synchronized (mDomainNameHub) {
             mDomainNameHub.put(GLOBAL_DOMAIN_NAME, new DomainHolder(url));
         }
+    }
+
+    public DomainHolder getGlobalDomain() {
+        return mDomainNameHub.get(GLOBAL_DOMAIN_NAME);
     }
 
     /**
