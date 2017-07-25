@@ -16,8 +16,7 @@ public interface UrlParser {
      * 用来替换 @{@link Request#url} 达到动态切换 Url
      *
      * @param domainUrl
-     * @param httpUrl
      * @return
      */
-    HttpUrl parseUrl(String domainUrl, HttpUrl httpUrl);
+    HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url);
 }
