@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="default url: http://jessyan.me" />
+            android:text="Default url: http://jessyan.me" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="globalUrl:" />
+                android:text="GlobalUrl:" />
 
             <EditText
                 android:id="@+id/et_global_url"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:background="@null"
-                android:text="http://www.baidu.com"
+                android:text="http://www.taobao.com"
                 android:textSize="15sp"
                 android:textStyle="italic" />
         </LinearLayout>
