@@ -38,6 +38,13 @@
  RetrofitUrlManager.getInstance().putDomain("douban", "https://api.douban.com");
 ```
 
+### 如果需要全局替换BaseUrl
+```java
+ // 全局url的优先级低于Domain-Name header中单独配置的，其他未配置的接口将受全局url的影响
+ RetrofitUrlManager.getInstance().setGlobalDomain(“”);
+
+```
+
 
 ## About Me
 * **Email**: <jess.yan.effort@gmail.com>
