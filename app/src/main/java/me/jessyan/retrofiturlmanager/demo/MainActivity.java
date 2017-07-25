@@ -21,7 +21,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import me.jessyan.retrofiturlmanager.DomainHolder;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import me.jessyan.retrofiturlmanager.onUrlChangeListener;
 import okhttp3.HttpUrl;
@@ -67,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DomainHolder holder = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
-                if (holder == null || !holder.getUrlStr().equals(mUrl1.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                HttpUrl httpUrl = RetrofitUrlManager.getInstance().fetchDomain(GITHUB_DOMAIN_NAME);
+                if (httpUrl == null || !httpUrl.toString().equals(mUrl1.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GITHUB_DOMAIN_NAME, mUrl1.getText().toString());
                 }
                 NetWorkManager
@@ -83,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DomainHolder holder = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
-                if (holder == null || !holder.getUrlStr().equals(mUrl2.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                HttpUrl httpUrl = RetrofitUrlManager.getInstance().fetchDomain(GANK_DOMAIN_NAME);
+                if (httpUrl == null || !httpUrl.toString().equals(mUrl2.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, mUrl2.getText().toString());
                 }
                 NetWorkManager
@@ -99,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_request3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DomainHolder holder = RetrofitUrlManager.getInstance().fetchDomain(DOUBAN_DOMAIN_NAME);
-                if (holder == null || !holder.getUrlStr().equals(mUrl3.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
+                HttpUrl httpUrl = RetrofitUrlManager.getInstance().fetchDomain(DOUBAN_DOMAIN_NAME);
+                if (httpUrl == null || !httpUrl.toString().equals(mUrl3.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(DOUBAN_DOMAIN_NAME, mUrl3.getText().toString());
                 }
                 NetWorkManager
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    // 请求默认url，请求的接口没有配置DomainHeader，所以只受全局url的影响
+    // 请求默认 BaseUrl，请求的接口没有配置 DomainHeader，所以只受全局 BaseUrl的影响
     public void btnRequestDefault(View view) {
         NetWorkManager
                 .getInstance()
@@ -144,17 +143,19 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(getDefaultObserver());
     }
 
-    // 设置全局替换的url
+    // 设置全局替换的 BaseUrl
     public void btnSetGlobalUrl(View view) {
-        DomainHolder domainHolder = RetrofitUrlManager.getInstance().getGlobalDomain();
-        if (null == domainHolder || !domainHolder.getUrlStr().equals(mGlobalUrl.getText().toString().trim()))
+        //当你项目中只有一个 BaseUrl ,但需要动态改变,全局 BaseUrl 显得非常方便
+        HttpUrl httpUrl = RetrofitUrlManager.getInstance().getGlobalDomain();
+        if (null == httpUrl || !httpUrl.toString().equals(mGlobalUrl.getText().toString().trim()))
             RetrofitUrlManager.getInstance().setGlobalDomain(mGlobalUrl.getText().toString().trim());
 
         Toast.makeText(getApplicationContext(), "全局替换baseUrl成功", Toast.LENGTH_SHORT).show();
     }
 
-    // 移除全局的url
+    // 移除全局的 BaseUrl
     public void btnRmoveGlobalUrl(View view) {
+        //不想再使用全局 BaseUrl ,想用之前传入 Retrofit 的默认 BaseUrl ,就Remove
         RetrofitUrlManager.getInstance().removeGlobalDomain();
         Toast.makeText(getApplicationContext(), "移除了全局baseUrl", Toast.LENGTH_SHORT).show();
     }

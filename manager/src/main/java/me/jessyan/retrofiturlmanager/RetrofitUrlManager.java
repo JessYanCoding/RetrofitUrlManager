@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.jessyan.retrofiturlmanager.parser.DefaultUrlParser;
+import me.jessyan.retrofiturlmanager.parser.UrlParser;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -31,7 +33,7 @@ public class RetrofitUrlManager {
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
 
     private boolean isRun = true; //默认开始运行,可以随时停止运行,比如你在 App 启动后已经不需要在动态切换 baseurl 了
-    private final Map<String, DomainHolder> mDomainNameHub = new HashMap<>();
+    private final Map<String, HttpUrl> mDomainNameHub = new HashMap<>();
     private final Interceptor mInterceptor;
     private final List<onUrlChangeListener> mListeners = new ArrayList<>();
     private UrlParser mUrlParser;
@@ -67,7 +69,7 @@ public class RetrofitUrlManager {
         private static final RetrofitUrlManager INSTANCE = new RetrofitUrlManager();
     }
 
-    public static RetrofitUrlManager getInstance() {
+    public static final RetrofitUrlManager getInstance() {
         return RetrofitUrlManagerHolder.INSTANCE;
     }
 
@@ -94,18 +96,18 @@ public class RetrofitUrlManager {
 
         String domainName = obtainDomainNameFromHeaders(request);
 
-        DomainHolder holder;
+        HttpUrl httpUrl;
 
-        // 如果有header，获取header中配置的url，否则检查全局的url，未找到则为null
+        // 如果有 header，获取 header 中配置的url，否则检查全局的 BaseUrl，未找到则为null
         if (!TextUtils.isEmpty(domainName)) {
-            holder = fetchDomain(domainName);
+            httpUrl = fetchDomain(domainName);
             newBuilder.removeHeader(DOMAIN_NAME);
         } else {
-            holder = fetchDomain(GLOBAL_DOMAIN_NAME);
+            httpUrl = fetchDomain(GLOBAL_DOMAIN_NAME);
         }
 
-        if (null != holder) {
-            HttpUrl newUrl = mUrlParser.parseUrl(holder.getDomain(), request.url());
+        if (null != httpUrl) {
+            HttpUrl newUrl = mUrlParser.parseUrl(httpUrl, request.url());
             Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
 
             Object[] listeners = listenersToArray();
@@ -115,7 +117,7 @@ public class RetrofitUrlManager {
                 }
             }
 
-            return request.newBuilder()
+            return newBuilder
                     .url(newUrl)
                     .build();
         }
@@ -143,22 +145,27 @@ public class RetrofitUrlManager {
     }
 
     /**
-     * 全局动态替换baseUrl，优先级： Header中配置的url > 全局配置的url
+     * 全局动态替换 BaseUrl，优先级： Header中配置的url > 全局配置的url
+     * 除了作为备用的 BaseUrl ,当你项目中只有一个 BaseUrl ,但需要动态改变
+     * 这种方式不用在每个接口方法上加 Header,也是个很好的选择
      *
      * @param url
      */
     public void setGlobalDomain(String url) {
         synchronized (mDomainNameHub) {
-            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, new DomainHolder(url));
+            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, Utils.checkUrl(url));
         }
     }
 
-    public DomainHolder getGlobalDomain() {
+    /**
+     * 获取全局 BaseUrl
+     */
+    public HttpUrl getGlobalDomain() {
         return mDomainNameHub.get(GLOBAL_DOMAIN_NAME);
     }
 
     /**
-     * 移除动态设置的全局url
+     * 移除全局 BaseUrl
      */
     public void removeGlobalDomain() {
         synchronized (mDomainNameHub) {
@@ -174,7 +181,7 @@ public class RetrofitUrlManager {
      */
     public void putDomain(String domainName, String domainUrl) {
         synchronized (mDomainNameHub) {
-            mDomainNameHub.put(domainName, new DomainHolder(domainUrl));
+            mDomainNameHub.put(domainName, Utils.checkUrl(domainUrl));
         }
     }
 
@@ -184,7 +191,7 @@ public class RetrofitUrlManager {
      * @param domainName
      * @return
      */
-    public DomainHolder fetchDomain(String domainName) {
+    public HttpUrl fetchDomain(String domainName) {
         return mDomainNameHub.get(domainName);
     }
 

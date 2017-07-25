@@ -1,5 +1,6 @@
-package me.jessyan.retrofiturlmanager;
+package me.jessyan.retrofiturlmanager.parser;
 
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
