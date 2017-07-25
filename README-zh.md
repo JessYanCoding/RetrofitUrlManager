@@ -1,5 +1,5 @@
 # RetrofitUrlManager
-[ ![Bintray](https://img.shields.io/badge/bintray-v1.0.2-brightgreen.svg) ](https://bintray.com/jessyancoding/maven/retrofit-url-manager/1.0.2/link)
+[ ![Bintray](https://img.shields.io/badge/bintray-v1.0.5-brightgreen.svg) ](https://bintray.com/jessyancoding/maven/retrofit-url-manager/1.0.5/link)
 [ ![Build Status](https://travis-ci.org/JessYanCoding/RetrofitUrlManager.svg?branch=master) ](https://travis-ci.org/JessYanCoding/RetrofitUrlManager)
 [ ![API](https://img.shields.io/badge/API-9%2B-blue.svg?style=flat-square) ](https://developer.android.com/about/versions/android-2.3.html)
 [ ![License](http://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square) ](http://www.apache.org/licenses/LICENSE-2.0)
@@ -11,7 +11,7 @@
 
 ## Download
 ``` gradle
- compile 'me.jessyan:retrofit-url-manager:1.0.2'
+ compile 'me.jessyan:retrofit-url-manager:1.0.5'
 ```
 
 ## Usage
