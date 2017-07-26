@@ -9,6 +9,11 @@
 ## Overview
 ![overview](art/overview.gif)
 
+## Introduction
+以最简洁的 **Api** 让 **Retrofit** 同时支持多个 **BaseUrl** 以及动态改变 **BaseUrl**.
+
+> [**框架的分析和思路**](http://www.jianshu.com/p/2919bdb8d09a)
+
 ## Download
 ``` gradle
  compile 'me.jessyan:retrofit-url-manager:1.0.5'
