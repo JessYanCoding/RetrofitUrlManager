@@ -46,7 +46,7 @@
 
 ### If you want to change the global BaseUrl
 ```java
- // 全局 BaseUrl 的优先级低于 Domain-Name header 中单独配置的，其他未配置的接口将受全局 BaseUrl 的影响
+ // 全局 BaseUrl 的优先级低于 Domain-Name header 中单独配置的,其他未配置的接口将受全局 BaseUrl 的影响
  RetrofitUrlManager.getInstance().setGlobalDomain(“your BaseUrl”);
 
 ```
