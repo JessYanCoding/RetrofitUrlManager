@@ -223,7 +223,14 @@ public class MainActivity extends AppCompatActivity {
     private class ChangeListener implements onUrlChangeListener {
 
         @Override
-        public void onUrlChange(final HttpUrl newUrl, HttpUrl oldUrl) {
+        public void onUrlChangeBefore(HttpUrl oldUrl, String domainName) {
+            Log.d("MainActivity", String.format("The oldUrl is <%s>, ready fetch <%s> from DomainNameHub",
+                    oldUrl.toString(),
+                    domainName));
+        }
+
+        @Override
+        public void onUrlChanged(final HttpUrl newUrl, HttpUrl oldUrl) {
             Observable.just(1)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Object>() {

@@ -98,11 +98,15 @@ public class RetrofitUrlManager {
 
         HttpUrl httpUrl;
 
-        // 如果有 header，获取 header 中配置的url，否则检查全局的 BaseUrl，未找到则为null
+        Object[] listeners = listenersToArray();
+
+        // 如果有 header,获取 header 中 domainName 所映射的 url,若没有,则检查全局的 BaseUrl,未找到则为null
         if (!TextUtils.isEmpty(domainName)) {
+            notifyListener(request, domainName, listeners);
             httpUrl = fetchDomain(domainName);
             newBuilder.removeHeader(DOMAIN_NAME);
         } else {
+            notifyListener(request, GLOBAL_DOMAIN_NAME, listeners);
             httpUrl = fetchDomain(GLOBAL_DOMAIN_NAME);
         }
 
@@ -110,10 +114,9 @@ public class RetrofitUrlManager {
             HttpUrl newUrl = mUrlParser.parseUrl(httpUrl, request.url());
             Log.d(RetrofitUrlManager.TAG, "New Url is { " + newUrl.toString() + " } , Old Url is { " + request.url().toString() + " }");
 
-            Object[] listeners = listenersToArray();
             if (listeners != null) {
                 for (int i = 0; i < listeners.length; i++) {
-                    ((onUrlChangeListener) listeners[i]).onUrlChange(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
+                    ((onUrlChangeListener) listeners[i]).onUrlChanged(newUrl, request.url()); // 通知监听器此 Url 的 BaseUrl 已被改变
                 }
             }
 
@@ -124,6 +127,14 @@ public class RetrofitUrlManager {
 
         return newBuilder.build();
 
+    }
+
+    private void notifyListener(Request request, String domainName, Object[] listeners) {
+        if (listeners != null) {
+            for (int i = 0; i < listeners.length; i++) {
+                ((onUrlChangeListener) listeners[i]).onUrlChangeBefore(request.url(),domainName);
+            }
+        }
     }
 
     /**
