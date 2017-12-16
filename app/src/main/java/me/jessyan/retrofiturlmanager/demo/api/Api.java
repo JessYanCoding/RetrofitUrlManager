@@ -25,7 +25,7 @@ package me.jessyan.retrofiturlmanager.demo.api;
 public interface Api {
     String APP_DEFAULT_DOMAIN = "http://jessyan.me";
 
-    String APP_GETHUB_DOMAIN = "https://api.github.com";
+    String APP_GITHUB_DOMAIN = "https://api.github.com";
     String APP_GANK_DOMAIN = "http://gank.io";
     String APP_DOUBAN_DOMAIN = "https://api.douban.com";
 
