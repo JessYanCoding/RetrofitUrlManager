@@ -31,7 +31,7 @@
 ### Step 1
 ``` java
  public interface ApiService {
-     @Headers({"Domain-Name: douban}) // 加上 Domain-Name header
+     @Headers({"Domain-Name: douban"}) // 加上 Domain-Name header
      @GET("/v2/book/{id}")
      Observable<ResponseBody> getBook(@Path("id") int id);
 }
@@ -47,7 +47,7 @@
 ### If you want to change the global BaseUrl
 ```java
  // 全局 BaseUrl 的优先级低于 Domain-Name header 中单独配置的,其他未配置的接口将受全局 BaseUrl 的影响
- RetrofitUrlManager.getInstance().setGlobalDomain(“your BaseUrl”);
+ RetrofitUrlManager.getInstance().setGlobalDomain("your BaseUrl");
 
 ```
 
