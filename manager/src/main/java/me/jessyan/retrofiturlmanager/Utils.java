@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 JessYan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,8 @@ import okhttp3.HttpUrl;
 
 /**
  * ================================================
+ * 工具类
+ * <p>
  * Created by JessYan on 2017/7/24.
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
  * <a href="https://github.com/JessYanCoding">Follow me</a>

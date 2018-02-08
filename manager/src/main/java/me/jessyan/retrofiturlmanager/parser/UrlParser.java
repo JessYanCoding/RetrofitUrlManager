@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 JessYan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import okhttp3.Request;
 /**
  * ================================================
  * Url解析器
+ * <p>
  * Created by JessYan on 17/07/2017 17:44
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
  * <a href="https://github.com/JessYanCoding">Follow me</a>
