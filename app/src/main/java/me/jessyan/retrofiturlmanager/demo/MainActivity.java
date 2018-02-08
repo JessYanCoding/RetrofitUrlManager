@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         this.mListener = new ChangeListener();
         //如果有需要可以注册监听器,当一个 Url 的 BaseUrl 被新的 Url 替代,则会回调这个监听器,调用时间是在接口请求服务器之前
         RetrofitUrlManager.getInstance().registerUrlChangeListener(mListener);
-        //如果你已经确定了最终的 BaseUrl ,不需要在动态改变 BaseUrl ,请 RetrofitUrlManager.getInstance().setRun(false);
+        //如果你已经确定了最终的 BaseUrl ,不需要再动态切换 BaseUrl, 请 RetrofitUrlManager.getInstance().setRun(false);
 
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 设置全局替换的 BaseUrl
     public void btnSetGlobalUrl(View view) {
-        //当你项目中只有一个 BaseUrl ,但需要动态改变,全局 BaseUrl 显得非常方便
+        //当你项目中只有一个 BaseUrl, 但需要动态切换 BaseUrl 时, 全局 BaseUrl 显得非常方便
         HttpUrl httpUrl = RetrofitUrlManager.getInstance().getGlobalDomain();
         if (null == httpUrl || !httpUrl.toString().equals(mGlobalUrl.getText().toString().trim()))
             RetrofitUrlManager.getInstance().setGlobalDomain(mGlobalUrl.getText().toString().trim());

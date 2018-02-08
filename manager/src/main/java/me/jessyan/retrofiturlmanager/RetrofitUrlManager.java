@@ -132,7 +132,7 @@ public class RetrofitUrlManager {
             newBuilder.removeHeader(DOMAIN_NAME);
         } else {
             notifyListener(request, GLOBAL_DOMAIN_NAME, listeners);
-            httpUrl = fetchDomain(GLOBAL_DOMAIN_NAME);
+            httpUrl = getGlobalDomain();
         }
 
         if (null != httpUrl) {

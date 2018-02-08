@@ -32,13 +32,18 @@ import static me.jessyan.retrofiturlmanager.demo.api.Api.GITHUB_DOMAIN_NAME;
  * ================================================
  */
 public interface OneApiService {
-    @Headers({DOMAIN_NAME_HEADER + GITHUB_DOMAIN_NAME}) //如果不需要多个 BaseUrl ,继续使用初始化时传入 Retrofit 中的默认 BaseUrl ,就不要加上 DOMAIN_NAME_HEADER 这个 Header
-    @GET("/users") // 可以通过在注解里给全路径达到使用不同的 BaseUrl ,但是这样无法在 App 运行时动态切换 BaseUrl
+    //如果不需要多个 BaseUrl, 继续使用初始化时传入 Retrofit 中的默认 BaseUrl, 就不要加上 DOMAIN_NAME_HEADER 这个 Header
+    @Headers({DOMAIN_NAME_HEADER + GITHUB_DOMAIN_NAME})
+    //可以通过在注解里给全路径达到使用不同的 BaseUrl, 但是这样无法在 App 运行时动态切换 BaseUrl
+    @GET("/users")
     Observable<ResponseBody> getUsers(@Query("since") int lastIdQueried, @Query("per_page") int perPage);
 
-    // 切换 Url 的优先级: DomainHeader 中的将覆盖全局的 BaseUrl
-    // 这里不配置 DomainHeader，将只受到设置的全局 BaseUrl 的影响,没有全局 BaseUrl 将请求原始的 BaseUrl
-    // 当你项目中只有一个 BaseUrl ,但需要动态改变,全局 BaseUrl 显得非常方便
-    @GET("/BaseUrl-Solution")// 这里随便写一个，just for test
+    //切换 Url 的优先级: DomainHeader 中对应 BaseUrl 的将覆盖全局的 BaseUrl
+    //这里不配置 DomainHeader, 将只受到设置的全局 BaseUrl 的影响, 没有全局 BaseUrl 将请求原始的 BaseUrl
+    //当你项目中只有一个 BaseUrl, 但需要动态切换 BaseUrl 时, 全局 BaseUrl 显得非常方便
+    //当你设置了全局 BaseUrl, 整个项目中没有加入 DomainHeader 的网络请求地址都将被切换成这个全局 BaseUrl
+    //如果你有某些网络请求地址不需要被切换成这个 全局 BaseUrl, 请在 Url 地址中加入 RetrofitUrlManager.IDENTIFICATION_IGNORE 这个标识符
+    //当某些下载接口需要请求固定的全路径或者 Glide 使用 Okhttp 请求某一个固定图片地址, RetrofitUrlManager.IDENTIFICATION_IGNORE 就可以派上用场
+    @GET("/BaseUrl-Solution")// 这里随便写一个, just for test
     Observable<ResponseBody> requestDefault();
 }
