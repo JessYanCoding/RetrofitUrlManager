@@ -52,6 +52,7 @@ public class RetrofitUrlManager {
     public static final String IDENTIFICATION_IGNORE = "#url_ignore";//如果在 Url 地址中加入此标识符, 管理器将不会对此 Url 进行任何切换 BaseUrl 的操作
 
     private boolean isRun = true; //默认开始运行, 可以随时停止运行, 比如你在 App 启动后已经不需要再动态切换 BaseUrl 了
+    private boolean debug = false;//在 Debug  模式下可以打印日志
     private final Map<String, HttpUrl> mDomainNameHub = new HashMap<>();
     private final Interceptor mInterceptor;
     private final List<onUrlChangeListener> mListeners = new ArrayList<>();
@@ -137,7 +138,7 @@ public class RetrofitUrlManager {
 
         if (null != httpUrl) {
             HttpUrl newUrl = mUrlParser.parseUrl(httpUrl, request.url());
-            Log.d(RetrofitUrlManager.TAG, "The new url is { " + newUrl.toString() + " }, old url is { " + request.url().toString() + " }");
+            if (debug) Log.d(RetrofitUrlManager.TAG, "The new url is { " + newUrl.toString() + " }, old url is { " + request.url().toString() + " }");
 
             if (listeners != null) {
                 for (int i = 0; i < listeners.length; i++) {
@@ -203,6 +204,15 @@ public class RetrofitUrlManager {
      */
     public void setRun(boolean run) {
         this.isRun = run;
+    }
+
+    /**
+     * 开启 Debug 模式下可以打印日志
+     *
+     * @param debug true 开启 Debug 模式
+     */
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     /**
