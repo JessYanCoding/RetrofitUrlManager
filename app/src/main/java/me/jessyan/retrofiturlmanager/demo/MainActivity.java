@@ -168,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
     // 设置全局替换的 BaseUrl
     public void btnSetGlobalUrl(View view) {
         //当你项目中只有一个 BaseUrl, 但需要动态切换 BaseUrl 时, 全局 BaseUrl 显得非常方便
+        //使用 RetrofitUrlManager.getInstance().setUrlNotChange(url); 方法处理过的 url 地址进行网络请求
+        //则可以使此 url 地址忽略掉本框架的所有更改效果
         HttpUrl httpUrl = RetrofitUrlManager.getInstance().getGlobalDomain();
         if (null == httpUrl || !httpUrl.toString().equals(mGlobalUrl.getText().toString().trim()))
             RetrofitUrlManager.getInstance().setGlobalDomain(mGlobalUrl.getText().toString().trim());

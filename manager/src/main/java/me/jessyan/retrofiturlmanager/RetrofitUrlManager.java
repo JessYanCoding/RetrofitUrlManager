@@ -138,7 +138,8 @@ public class RetrofitUrlManager {
 
         if (null != httpUrl) {
             HttpUrl newUrl = mUrlParser.parseUrl(httpUrl, request.url());
-            if (debug) Log.d(RetrofitUrlManager.TAG, "The new url is { " + newUrl.toString() + " }, old url is { " + request.url().toString() + " }");
+            if (debug)
+                Log.d(RetrofitUrlManager.TAG, "The new url is { " + newUrl.toString() + " }, old url is { " + request.url().toString() + " }");
 
             if (listeners != null) {
                 for (int i = 0; i < listeners.length; i++) {
@@ -213,6 +214,20 @@ public class RetrofitUrlManager {
      */
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    /**
+     * 将 url 地址作为参数传入此方法, 并使用此方法返回的 url 地址进行网络请求, 则会使此 url 地址忽略掉本框架的所有更改效果
+     * <p>
+     * 使用场景:
+     * 比如当你使用了 {@link #setGlobalDomain(String url)} 配置了全局 BaseUrl 后, 想请求一个与全局 BaseUrl
+     * 不同的第三方服务商地址获取图片
+     *
+     * @param url url 全路径
+     * @return
+     */
+    public String setUrlNotChange(String url) {
+        return url + IDENTIFICATION_IGNORE;
     }
 
     /**
