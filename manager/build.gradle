@@ -26,7 +26,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'com.squareup.okhttp3:okhttp:3.10.0'
 }
 
