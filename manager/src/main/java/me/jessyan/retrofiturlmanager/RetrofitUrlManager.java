@@ -223,8 +223,8 @@ public class RetrofitUrlManager {
      * 比如当你使用了 {@link #setGlobalDomain(String url)} 配置了全局 BaseUrl 后, 想请求一个与全局 BaseUrl
      * 不同的第三方服务商地址获取图片
      *
-     * @param url url 全路径
-     * @return
+     * @param url url 路径
+     * @return 处理后的 url 路径
      */
     public String setUrlNotChange(String url) {
         return url + IDENTIFICATION_IGNORE;
