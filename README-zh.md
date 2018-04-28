@@ -1,9 +1,11 @@
 # RetrofitUrlManager
-[ ![Bintray](https://img.shields.io/badge/bintray-v1.2.5-brightgreen.svg) ](https://bintray.com/jessyancoding/maven/retrofit-url-manager/1.2.5/link)
+[ ![Jcenter](https://img.shields.io/badge/Jcenter-v1.2.5-brightgreen.svg?style=flat-square) ](https://bintray.com/jessyancoding/maven/retrofit-url-manager/1.2.5/link)
 [ ![Build Status](https://travis-ci.org/JessYanCoding/RetrofitUrlManager.svg?branch=master) ](https://travis-ci.org/JessYanCoding/RetrofitUrlManager)
-[ ![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RetrofitUrlManager-brightgreen.svg?style=flat) ](https://android-arsenal.com/details/1/6007)
+[ ![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RetrofitUrlManager-brightgreen.svg?style=flat-square) ](https://android-arsenal.com/details/1/6007)
 [ ![API](https://img.shields.io/badge/API-9%2B-blue.svg?style=flat-square) ](https://developer.android.com/about/versions/android-2.3.html)
 [ ![License](http://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square) ](http://www.apache.org/licenses/LICENSE-2.0)
+[ ![Author](https://img.shields.io/badge/Author-JessYan-orange.svg?style=flat-square) ](https://www.jianshu.com/u/1d0c0bc634db)
+[ ![QQ-Group](https://img.shields.io/badge/QQ群-301733278-orange.svg?style=flat-square) ](https://shang.qq.com/wpa/qunwpa?idkey=1a5dc5e9b2e40a780522f46877ba243eeb64405d42398643d544d3eec6624917)
 
 ## Let Retrofit support multiple baseUrl and can be change the baseUrl at runtime.
 
