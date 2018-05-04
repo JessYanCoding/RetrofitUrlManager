@@ -14,6 +14,11 @@
 ## Overview
 ![overview](art/overview.gif)
 
+## Notice
+[**Framework analysis**](http://www.jianshu.com/p/2919bdb8d09a)
+
+[**More complete sample**](https://github.com/JessYanCoding/ArmsComponent)
+
 ## Download
 ``` gradle
  compile 'me.jessyan:retrofit-url-manager:1.2.5'
