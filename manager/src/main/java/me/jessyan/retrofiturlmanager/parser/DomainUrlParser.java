@@ -15,11 +15,17 @@
  */
 package me.jessyan.retrofiturlmanager.parser;
 
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.HttpUrl;
 
 /**
  * ================================================
- * 默认解析器
+ * 域名解析器, 此解析器用来解析域名, 只会将旧 URL 地址中的域名替换成你想要的域名
+ * <p>
+ * 比如:
+ * 旧 URL 地址为 https://www.github.com/wiki, 您调用 {@link RetrofitUrlManager#putDomain(String, String)}
+ * 方法传入的 URL 地址是 https://www.google.com/api, 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/wiki
+ * 在域名后面的地址将被忽略
  *
  * @see UrlParser
  * Created by JessYan on 17/07/2017 18:23
@@ -27,12 +33,12 @@ import okhttp3.HttpUrl;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class DefaultUrlParser implements UrlParser {
+public class DomainUrlParser implements UrlParser {
     @Override
     public HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url) {
 
         // 如果 HttpUrl.parse(url); 解析为 null 说明,url 格式不正确,正确的格式为 "https://github.com:443"
-        // http 默认端口 80,https 默认端口 443 ,如果端口号是默认端口号就可以将 ":443" 去掉
+        // http 默认端口 80, https 默认端口 443, 如果端口号是默认端口号就可以将 ":443" 去掉
         // 只支持 http 和 https
 
         if (null == domainUrl) return url;
