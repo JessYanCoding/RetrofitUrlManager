@@ -20,26 +20,35 @@ import okhttp3.HttpUrl;
 
 /**
  * ================================================
- * 域名解析器, 此解析器只会将旧 URL 地址中的域名替换成你想要的域名
+ * 高级解析器, 当 BaseUrl 中有除了域名以外的其他 Path 时, 可使用此解析器
  * <p>
  * 比如:
- * 旧 URL 地址为 https://www.github.com/wiki, 您调用 {@link RetrofitUrlManager#putDomain(String, String)}
- * 方法传入的 URL 地址是 https://www.google.com/api, 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/wiki
- * 在域名后面的地址将被忽略
+ * 1.
+ * 旧 URL 地址为 https://www.github.com/wiki/part, 其中 BaseUrl 为 https://www.github.com/wiki
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/part
+ * <p>
+ * 2.
+ * 旧 URL 地址为 https://www.github.com/wiki/part, 其中 BaseUrl 为 https://www.github.com/wiki
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/part
+ * <p>
+ * 3.
+ * 旧 URL 地址为 https://www.github.com/wiki/part, 其中 BaseUrl 为 https://www.github.com
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/wiki/part
+ * <p>
+ * 解析器会将 BaseUrl 全部替换成您传入的 Url 地址
  *
  * @see UrlParser
- * Created by JessYan on 17/07/2017 18:23
+ * Created by JessYan on 09/06/2018 16:00
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class DomainUrlParser implements UrlParser {
+public class AdvancedUrlParser implements UrlParser {
     @Override
     public HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url) {
-
-        // 如果 HttpUrl.parse(url); 解析为 null 说明,url 格式不正确,正确的格式为 "https://github.com:443"
-        // http 默认端口 80, https 默认端口 443, 如果端口号是默认端口号就可以将 ":443" 去掉
-        // 只支持 http 和 https
 
         if (null == domainUrl) return url;
 
