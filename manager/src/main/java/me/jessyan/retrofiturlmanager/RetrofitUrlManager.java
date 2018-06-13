@@ -79,7 +79,9 @@ public class RetrofitUrlManager {
         if (!DEPENDENCY_OKHTTP) { //使用本管理器必须依赖 Okhttp
             throw new IllegalStateException("Must be dependency Okhttp");
         }
-        setUrlParser(new DefaultUrlParser());
+        UrlParser urlParser = new DefaultUrlParser();
+        urlParser.init(this);
+        setUrlParser(urlParser);
         this.mInterceptor = new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
