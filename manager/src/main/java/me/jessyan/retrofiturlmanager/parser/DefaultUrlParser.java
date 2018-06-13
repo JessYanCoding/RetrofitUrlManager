@@ -15,11 +15,12 @@
  */
 package me.jessyan.retrofiturlmanager.parser;
 
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.HttpUrl;
 
 /**
  * ================================================
- * 默认解析器
+ * 默认解析器, 可根据自定义策略选择不同的解析器
  *
  * @see UrlParser
  * Created by JessYan on 17/07/2017 18:23
@@ -28,19 +29,32 @@ import okhttp3.HttpUrl;
  * ================================================
  */
 public class DefaultUrlParser implements UrlParser {
+
+    private UrlParser mDomainUrlParser;
+    private volatile UrlParser mAdvancedUrlParser;
+    private RetrofitUrlManager mRetrofitUrlManager;
+
+    @Override
+    public void init(RetrofitUrlManager retrofitUrlManager) {
+        this.mRetrofitUrlManager = retrofitUrlManager;
+        this.mDomainUrlParser = new DomainUrlParser();
+    }
+
     @Override
     public HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url) {
-
-        // 如果 HttpUrl.parse(url); 解析为 null 说明,url 格式不正确,正确的格式为 "https://github.com:443"
-        // http 默认端口 80,https 默认端口 443 ,如果端口号是默认端口号就可以将 ":443" 去掉
-        // 只支持 http 和 https
-
         if (null == domainUrl) return url;
 
-        return url.newBuilder()
-                .scheme(domainUrl.scheme())
-                .host(domainUrl.host())
-                .port(domainUrl.port())
-                .build();
+        //如果是高级模式则使用高级解析器
+        if (mRetrofitUrlManager.isAdvancedModel()) {
+            if (mAdvancedUrlParser == null) {
+                synchronized (this) {
+                    if (mAdvancedUrlParser == null) {
+                        mAdvancedUrlParser = new AdvancedUrlParser();
+                    }
+                }
+            }
+            return mAdvancedUrlParser.parseUrl(domainUrl, url);
+        }
+        return mDomainUrlParser.parseUrl(domainUrl, url);
     }
 }
