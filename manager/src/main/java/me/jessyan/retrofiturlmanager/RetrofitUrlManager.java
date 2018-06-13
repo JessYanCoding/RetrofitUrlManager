@@ -32,11 +32,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static me.jessyan.retrofiturlmanager.Utils.checkNotNull;
+import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
+
 /**
  * ================================================
  * RetrofitUrlManager 以简洁的 Api, 让 Retrofit 不仅支持多 BaseUrl
  * 还可以在 App 运行时动态切换任意 BaseUrl, 在多 BaseUrl 场景下也不会影响到其他不需要切换的 BaseUrl
- * 注意: 本管理只能替换域名, 比如使用 "https:www.google.com" 作为 BaseUrl 可以被替换, 但是 "https:www.google.com/api" 因为后面加入了 "/api" 则不能被替换
+ * 注意: 本管理器默认的普通模式只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换, 但是以 "https:www.google.com/api" 作为 BaseUrl 就不能被替换
+ * 如果想替换拥有多个 pathSegments 的 BaseUrl, 如 "https:www.google.com/api", 则需要开启高级模式 {@link #startAdvancedModel(String)}
  * <p>
  * Created by JessYan on 17/07/2017 14:29
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
@@ -51,6 +55,7 @@ public class RetrofitUrlManager {
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
     public static final String IDENTIFICATION_IGNORE = "#url_ignore";//如果在 Url 地址中加入此标识符, 管理器将不会对此 Url 进行任何切换 BaseUrl 的操作
 
+    private HttpUrl baseUrl;
     private boolean isRun = true; //默认开始运行, 可以随时停止运行, 比如你在 App 启动后已经不需要再动态切换 BaseUrl 了
     private boolean debug = false;//在 Debug  模式下可以打印日志
     private final Map<String, HttpUrl> mDomainNameHub = new HashMap<>();
@@ -214,6 +219,32 @@ public class RetrofitUrlManager {
      */
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    /**
+     * 开启高级模式, 高级模式可以替换拥有多个 pathSegments 的 BaseUrl, 如: https://www.github.com/wiki/part
+     * 高级模式的解析规则, 请看 {@link me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser}
+     * 注意, 如果没有开启高级模式, 默认为普通默认, 只能替换域名, 如: https://www.github.com
+     *
+     * @param baseUrl 你当时传入 Retrofit 的 BaseUrl
+     * @see me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
+     */
+    public void startAdvancedModel(String baseUrl) {
+        checkNotNull(baseUrl, "baseUrl == null");
+        startAdvancedModel(checkUrl(baseUrl));
+    }
+
+    /**
+     * 开启高级模式, 高级模式可以替换拥有多个 pathSegments 的 BaseUrl, 如: https://www.github.com/wiki/part
+     * 高级模式的解析规则, 请看 {@link me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser}
+     * 注意, 如果没有开启高级模式, 默认为普通默认, 只能替换域名, 如: https://www.github.com
+     *
+     * @param baseUrl 你当时传入 Retrofit 的 BaseUrl
+     * @see me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
+     */
+    public void startAdvancedModel(HttpUrl baseUrl) {
+        checkNotNull(baseUrl, "baseUrl == null");
+        this.baseUrl = baseUrl;
     }
 
     /**
