@@ -38,6 +38,7 @@ public class DefaultUrlParser implements UrlParser {
     public void init(RetrofitUrlManager retrofitUrlManager) {
         this.mRetrofitUrlManager = retrofitUrlManager;
         this.mDomainUrlParser = new DomainUrlParser();
+        mDomainUrlParser.init(retrofitUrlManager);
     }
 
     @Override
@@ -50,6 +51,7 @@ public class DefaultUrlParser implements UrlParser {
                 synchronized (this) {
                     if (mAdvancedUrlParser == null) {
                         mAdvancedUrlParser = new AdvancedUrlParser();
+                        mAdvancedUrlParser.init(mRetrofitUrlManager);
                     }
                 }
             }
