@@ -197,7 +197,7 @@ public class RetrofitUrlManager {
     /**
      * 管理器是否在运行
      *
-     * @return {@code true} 为正在运行, 反之亦然
+     * @return {@code true} 为正在运行, {@code false} 为未运行
      */
     public boolean isRun() {
         return this.isRun;
@@ -206,7 +206,7 @@ public class RetrofitUrlManager {
     /**
      * 控制管理器是否运行, 在每个域名地址都已经确定, 不需要再动态更改时可设置为 {@code false}
      *
-     * @param run {@code true} 为正在运行, 反之亦然
+     * @param run {@code true} 为正在运行, {@code false} 为未运行
      */
     public void setRun(boolean run) {
         this.isRun = run;
@@ -245,6 +245,24 @@ public class RetrofitUrlManager {
     public void startAdvancedModel(HttpUrl baseUrl) {
         checkNotNull(baseUrl, "baseUrl == null");
         this.baseUrl = baseUrl;
+    }
+
+    /**
+     * 是否开启高级模式
+     *
+     * @return {@code true} 为开启, {@code false} 为未开启
+     */
+    public boolean isAdvancedModel() {
+        return baseUrl != null;
+    }
+
+    /**
+     * 获取 BaseUrl
+     *
+     * @return {@link #baseUrl}
+     */
+    public HttpUrl getBaseUrl() {
+        return baseUrl;
     }
 
     /**
@@ -334,7 +352,7 @@ public class RetrofitUrlManager {
      * 存放 Domain(BaseUrl) 的容器中是否存在这个 {@code domainName}
      *
      * @param domainName {@code domainName}
-     * @return {@code true} 为存在, 反之亦然
+     * @return {@code true} 为存在, {@code false} 为不存在
      */
     public boolean haveDomain(String domainName) {
         return mDomainNameHub.containsKey(domainName);
