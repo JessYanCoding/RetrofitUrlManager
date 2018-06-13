@@ -38,7 +38,7 @@ public class DefaultUrlParser implements UrlParser {
     public void init(RetrofitUrlManager retrofitUrlManager) {
         this.mRetrofitUrlManager = retrofitUrlManager;
         this.mDomainUrlParser = new DomainUrlParser();
-        mDomainUrlParser.init(retrofitUrlManager);
+        this.mDomainUrlParser.init(retrofitUrlManager);
     }
 
     @Override
