@@ -21,6 +21,10 @@ import okhttp3.HttpUrl;
 /**
  * ================================================
  * 默认解析器, 可根据自定义策略选择不同的解析器
+ * <p>
+ * 如果您觉得 {@link DefaultUrlParser} 的解析策略并不能满足您的需求, 您可以自行实现更适合您的 {@link UrlParser}
+ * 然后通过 {@link RetrofitUrlManager#setUrlParser(UrlParser)} 配置给框架, 即可替换 {@link DefaultUrlParser}
+ * 自己改 {@link DefaultUrlParser} 的源码来达到扩展的目的是很笨的行为
  *
  * @see UrlParser
  * Created by JessYan on 17/07/2017 18:23

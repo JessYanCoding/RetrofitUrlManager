@@ -15,6 +15,9 @@
  */
 package me.jessyan.retrofiturlmanager.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.HttpUrl;
 
@@ -47,12 +50,45 @@ import okhttp3.HttpUrl;
  * ================================================
  */
 public class AdvancedUrlParser implements UrlParser {
+    private RetrofitUrlManager mRetrofitUrlManager;
+
+    @Override
+    public void init(RetrofitUrlManager retrofitUrlManager) {
+        this.mRetrofitUrlManager = retrofitUrlManager;
+    }
+
     @Override
     public HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url) {
-
         if (null == domainUrl) return url;
 
-        return url.newBuilder()
+        HttpUrl.Builder builder = url.newBuilder();
+
+        for (int i = 0; i < url.pathSize(); i++) {
+            //当删除了上一个 index, PathSegment 的 item 会自动前进一位, 所以 remove(0) 就好
+            builder.removePathSegment(0);
+        }
+
+        List<String> newPathSegments = new ArrayList<>();
+        newPathSegments.addAll(domainUrl.encodedPathSegments());
+
+        if (url.pathSize() > mRetrofitUrlManager.getPathSize()) {
+            List<String> encodedPathSegments = url.encodedPathSegments();
+            for (int i = mRetrofitUrlManager.getPathSize(); i < encodedPathSegments.size(); i++) {
+                newPathSegments.add(encodedPathSegments.get(i));
+            }
+        } else if (url.pathSize() < mRetrofitUrlManager.getPathSize()){
+            throw new IllegalArgumentException(String.format("Your final path is %s, but the baseUrl of your RetrofitUrlManager#startAdvancedModel is %s",
+                    url.scheme() + "://" + url.host() + url.encodedPath(),
+                    mRetrofitUrlManager.getBaseUrl().scheme() + "://"
+                            + mRetrofitUrlManager.getBaseUrl().host()
+                            + mRetrofitUrlManager.getBaseUrl().encodedPath()));
+        }
+
+        for (String PathSegment : newPathSegments) {
+            builder.addEncodedPathSegment(PathSegment);
+        }
+
+        return builder
                 .scheme(domainUrl.scheme())
                 .host(domainUrl.host())
                 .port(domainUrl.port())
