@@ -56,6 +56,7 @@ public class RetrofitUrlManager {
     public static final String IDENTIFICATION_IGNORE = "#url_ignore";//如果在 Url 地址中加入此标识符, 管理器将不会对此 Url 进行任何切换 BaseUrl 的操作
 
     private HttpUrl baseUrl;
+    private int pathSize;
     private boolean isRun = true; //默认开始运行, 可以随时停止运行, 比如你在 App 启动后已经不需要再动态切换 BaseUrl 了
     private boolean debug = false;//在 Debug  模式下可以打印日志
     private final Map<String, HttpUrl> mDomainNameHub = new HashMap<>();
@@ -247,6 +248,20 @@ public class RetrofitUrlManager {
     public void startAdvancedModel(HttpUrl baseUrl) {
         checkNotNull(baseUrl, "baseUrl == null");
         this.baseUrl = baseUrl;
+        this.pathSize = baseUrl.pathSize();
+        List<String> baseUrlpathSegments = baseUrl.pathSegments();
+        if ("".equals(baseUrlpathSegments.get(baseUrlpathSegments.size() - 1))) {
+            this.pathSize -= 1;
+        }
+    }
+
+    /**
+     * 获取 PathSegments 的总大小
+     *
+     * @return PathSegments 的 size
+     */
+    public int getPathSize() {
+        return pathSize;
     }
 
     /**
