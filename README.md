@@ -21,7 +21,7 @@
 
 ## Download
 ``` gradle
- compile 'me.jessyan:retrofit-url-manager:1.3.0'
+ implementation 'me.jessyan:retrofit-url-manager:1.3.0'
 ```
 
 ## Usage
