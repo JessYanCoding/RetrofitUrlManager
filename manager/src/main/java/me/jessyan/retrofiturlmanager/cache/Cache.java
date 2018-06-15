@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jess.arms.integration.cache;
-
-import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.jess.arms.di.module.GlobalConfigModule;
+package me.jessyan.retrofiturlmanager.cache;
 
 import java.util.Set;
 
 
 /**
  * ================================================
- * 用于缓存框架中所必需的组件,开发者可通过 {@link GlobalConfigModule.Builder#cacheFactory(Factory)} 为框架提供缓存策略
- * 开发者也可以用于自己日常中的使用
+ * 缓存
  *
- * @see GlobalConfigModule#provideCacheFactory(Application)
  * @see LruCache
  * Created by JessYan on 25/09/2017 16:36
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
@@ -37,17 +29,6 @@ import java.util.Set;
  * ================================================
  */
 public interface Cache<K, V> {
-    interface Factory {
-
-        /**
-         * Returns a new cache
-         *
-         * @param type 框架中需要缓存的模块类型
-         * @return {@link Cache}
-         */
-        @NonNull
-        Cache build(CacheType type);
-    }
 
     /**
      * 返回当前缓存已占用的总 size
@@ -69,18 +50,16 @@ public interface Cache<K, V> {
      * @param key {@code key}
      * @return {@code value}
      */
-    @Nullable
     V get(K key);
 
     /**
      * 将 {@code key} 和 {@code value} 以条目的形式加入缓存,如果这个 {@code key} 在缓存中已经有对应的 {@code value}
      * 则此 {@code value} 被新的 {@code value} 替换并返回,如果为 {@code null} 说明是一个新条目
      *
-     * @param key {@code key}
+     * @param key   {@code key}
      * @param value {@code value}
      * @return 如果这个 {@code key} 在容器中已经储存有 {@code value}, 则返回之前的 {@code value} 否则返回 {@code null}
      */
-    @Nullable
     V put(K key, V value);
 
     /**
@@ -90,7 +69,6 @@ public interface Cache<K, V> {
      * @param key {@code key}
      * @return 如果这个 {@code key} 在容器中已经储存有 {@code value} 并且删除成功则返回删除的 {@code value}, 否则返回 {@code null}
      */
-    @Nullable
     V remove(K key);
 
     /**
