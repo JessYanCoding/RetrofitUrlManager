@@ -1,5 +1,5 @@
 # RetrofitUrlManager
-[ ![Jcenter](https://img.shields.io/badge/Jcenter-v1.2.5-brightgreen.svg?style=flat-square) ](https://bintray.com/jessyancoding/maven/retrofit-url-manager/1.2.5/link)
+[ ![Jcenter](https://img.shields.io/badge/Jcenter-v1.3.0-brightgreen.svg?style=flat-square) ](https://bintray.com/jessyancoding/maven/retrofit-url-manager/1.3.0/link)
 [ ![Build Status](https://travis-ci.org/JessYanCoding/RetrofitUrlManager.svg?branch=master) ](https://travis-ci.org/JessYanCoding/RetrofitUrlManager)
 [ ![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RetrofitUrlManager-brightgreen.svg?style=flat-square) ](https://android-arsenal.com/details/1/6007)
 [ ![API](https://img.shields.io/badge/API-9%2B-blue.svg?style=flat-square) ](https://developer.android.com/about/versions/android-2.3.html)
@@ -22,7 +22,7 @@
 
 ## Download
 ``` gradle
- compile 'me.jessyan:retrofit-url-manager:1.2.5'
+ compile 'me.jessyan:retrofit-url-manager:1.3.0'
 ```
 
 ## Usage
