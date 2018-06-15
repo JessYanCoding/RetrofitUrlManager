@@ -108,6 +108,7 @@ public class RetrofitUrlManager {
      * @return {@link OkHttpClient.Builder}
      */
     public OkHttpClient.Builder with(OkHttpClient.Builder builder) {
+        checkNotNull(builder, "builder cannot be null");
         return builder
                 .addInterceptor(mInterceptor);
     }
@@ -119,6 +120,7 @@ public class RetrofitUrlManager {
      * @return {@link Request}
      */
     public Request processRequest(Request request) {
+        if (request == null) return request;
 
         Request.Builder newBuilder = request.newBuilder();
 
@@ -233,7 +235,7 @@ public class RetrofitUrlManager {
      * @see me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
      */
     public void startAdvancedModel(String baseUrl) {
-        checkNotNull(baseUrl, "baseUrl == null");
+        checkNotNull(baseUrl, "baseUrl cannot be null");
         startAdvancedModel(checkUrl(baseUrl));
     }
 
@@ -245,8 +247,8 @@ public class RetrofitUrlManager {
      * @param baseUrl 你当时传入 Retrofit 的 BaseUrl
      * @see me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
      */
-    public void startAdvancedModel(HttpUrl baseUrl) {
-        checkNotNull(baseUrl, "baseUrl == null");
+    public synchronized void startAdvancedModel(HttpUrl baseUrl) {
+        checkNotNull(baseUrl, "baseUrl cannot be null");
         this.baseUrl = baseUrl;
         this.pathSize = baseUrl.pathSize();
         List<String> baseUrlpathSegments = baseUrl.pathSegments();
@@ -293,6 +295,7 @@ public class RetrofitUrlManager {
      * @return 处理后的 url 路径
      */
     public String setUrlNotChange(String url) {
+        checkNotNull(url, "url cannot be null");
         return url + IDENTIFICATION_IGNORE;
     }
 
@@ -301,18 +304,19 @@ public class RetrofitUrlManager {
      * 除了作为备用的 BaseUrl, 当你项目中只有一个 BaseUrl, 但需要动态切换
      * 这种方式不用在每个接口方法上加入 Header, 就能实现动态切换 BaseUrl
      *
-     * @param url 全局 BaseUrl
+     * @param globalDomain 全局 BaseUrl
      */
-    public void setGlobalDomain(String url) {
+    public void setGlobalDomain(String globalDomain) {
+        checkNotNull(globalDomain, "globalDomain cannot be null");
         synchronized (mDomainNameHub) {
-            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, Utils.checkUrl(url));
+            mDomainNameHub.put(GLOBAL_DOMAIN_NAME, Utils.checkUrl(globalDomain));
         }
     }
 
     /**
      * 获取全局 BaseUrl
      */
-    public HttpUrl getGlobalDomain() {
+    public synchronized HttpUrl getGlobalDomain() {
         return mDomainNameHub.get(GLOBAL_DOMAIN_NAME);
     }
 
@@ -332,6 +336,8 @@ public class RetrofitUrlManager {
      * @param domainUrl
      */
     public void putDomain(String domainName, String domainUrl) {
+        checkNotNull(domainName, "domainName cannot be null");
+        checkNotNull(domainUrl, "domainUrl cannot be null");
         synchronized (mDomainNameHub) {
             mDomainNameHub.put(domainName, Utils.checkUrl(domainUrl));
         }
@@ -343,7 +349,8 @@ public class RetrofitUrlManager {
      * @param domainName
      * @return
      */
-    public HttpUrl fetchDomain(String domainName) {
+    public synchronized HttpUrl fetchDomain(String domainName) {
+        checkNotNull(domainName, "domainName cannot be null");
         return mDomainNameHub.get(domainName);
     }
 
@@ -353,6 +360,7 @@ public class RetrofitUrlManager {
      * @param domainName {@code domainName}
      */
     public void removeDomain(String domainName) {
+        checkNotNull(domainName, "domainName cannot be null");
         synchronized (mDomainNameHub) {
             mDomainNameHub.remove(domainName);
         }
@@ -371,7 +379,7 @@ public class RetrofitUrlManager {
      * @param domainName {@code domainName}
      * @return {@code true} 为存在, {@code false} 为不存在
      */
-    public boolean haveDomain(String domainName) {
+    public synchronized boolean haveDomain(String domainName) {
         return mDomainNameHub.containsKey(domainName);
     }
 
@@ -380,7 +388,7 @@ public class RetrofitUrlManager {
      *
      * @return 容量大小
      */
-    public int domainSize() {
+    public synchronized int domainSize() {
         return mDomainNameHub.size();
     }
 
@@ -390,6 +398,7 @@ public class RetrofitUrlManager {
      * @param parser {@link UrlParser}
      */
     public void setUrlParser(UrlParser parser) {
+        checkNotNull(parser, "parser cannot be null");
         this.mUrlParser = parser;
     }
 
@@ -399,6 +408,7 @@ public class RetrofitUrlManager {
      * @param listener 监听器列表
      */
     public void registerUrlChangeListener(onUrlChangeListener listener) {
+        checkNotNull(listener, "listener cannot be null");
         synchronized (mListeners) {
             mListeners.add(listener);
         }
@@ -410,6 +420,7 @@ public class RetrofitUrlManager {
      * @param listener 监听器列表
      */
     public void unregisterUrlChangeListener(onUrlChangeListener listener) {
+        checkNotNull(listener, "listener cannot be null");
         synchronized (mListeners) {
             mListeners.remove(listener);
         }
@@ -425,7 +436,6 @@ public class RetrofitUrlManager {
         return listeners;
     }
 
-
     /**
      * 从 {@link Request#header(String)} 中取出 DomainName
      *
@@ -440,5 +450,4 @@ public class RetrofitUrlManager {
             throw new IllegalArgumentException("Only one Domain-Name in the headers");
         return request.header(DOMAIN_NAME);
     }
-
 }
