@@ -57,7 +57,7 @@ public class RetrofitUrlManager {
 
     private HttpUrl baseUrl;
     private int pathSize;
-    private boolean isRun = true; //默认开始运行, 可以随时停止运行, 比如你在 App 启动后已经不需要再动态切换 BaseUrl 了
+    private boolean isRun = true; //默认开始运行, 可以随时停止运行, 比如您在 App 启动后已经不需要再动态切换 BaseUrl 了
     private boolean debug = false;//在 Debug  模式下可以打印日志
     private final Map<String, HttpUrl> mDomainNameHub = new HashMap<>();
     private final Interceptor mInterceptor;
@@ -230,8 +230,17 @@ public class RetrofitUrlManager {
      * 开启高级模式, 高级模式可以替换拥有多个 pathSegments 的 BaseUrl, 如: https://www.github.com/wiki/part
      * 高级模式的解析规则, 请看 {@link me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser}
      * 注意, 如果没有开启高级模式, 默认为普通默认, 只能替换域名, 如: https://www.github.com
+     * <p>
+     * 注意, 遇到这个坑, 请别怪框架!!! Retrofit 的 BaseUrl 含有可被覆盖 pathSegment 的规则:
+     * 举例: 您设置给 Retrofit 的 BaseUrl 是 "http://www.github.com/a/b/"
+     * 然后您在接口方法上给的注解是 {@code @GET("/path")}, 这时 Retrofit 生成的最终路径是 "http://www.github.com/path"
+     * "/a/b/" 被剪切掉了, 为什么? 因为您在 "path" 前面加上了 "/", "/" 会让 Retrofit 认为把您只想保留 BaseUrl 中的域名
+     * 如果去掉 "/", {@code @GET("path")} 得到的最终路径才是 "http://www.github.com/a/b/path"
+     * <p>
+     * 所以如果在最终路径中, BaseUrl 的 "/a/b/" 因为您不熟悉规则而被剪切, 这时您应该在 {@link #startAdvancedModel(HttpUrl)}
+     * 中传入被剪切的实际 BaseUrl "http://www.github.com", 而不是 http://www.github.com/a/b/, 否则框架会理解错误!
      *
-     * @param baseUrl 你当时传入 Retrofit 的 BaseUrl
+     * @param baseUrl 您当时传入 Retrofit 的 BaseUrl
      * @see me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
      */
     public void startAdvancedModel(String baseUrl) {
@@ -243,8 +252,17 @@ public class RetrofitUrlManager {
      * 开启高级模式, 高级模式可以替换拥有多个 pathSegments 的 BaseUrl, 如: https://www.github.com/wiki/part
      * 高级模式的解析规则, 请看 {@link me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser}
      * 注意, 如果没有开启高级模式, 默认为普通默认, 只能替换域名, 如: https://www.github.com
+     * <p>
+     * 注意, 遇到这个坑, 请别怪框架!!! Retrofit 的 BaseUrl 含有可被覆盖 pathSegment 的规则:
+     * 举例: 您设置给 Retrofit 的 BaseUrl 是 "http://www.github.com/a/b/"
+     * 然后您在接口方法上给的注解是 {@code @GET("/path")}, 这时 Retrofit 生成的最终路径是 "http://www.github.com/path"
+     * "/a/b/" 被剪切掉了, 为什么? 因为您在 "path" 前面加上了 "/", "/" 会让 Retrofit 认为把您只想保留 BaseUrl 中的域名
+     * 如果去掉 "/", {@code @GET("path")} 得到的最终路径才是 "http://www.github.com/a/b/path"
+     * <p>
+     * 所以如果在最终路径中, BaseUrl 的 "/a/b/" 因为您不熟悉规则而被剪切, 这时您应该在 {@link #startAdvancedModel(HttpUrl)}
+     * 中传入被剪切的实际 BaseUrl "http://www.github.com", 而不是 http://www.github.com/a/b/, 否则框架会理解错误!
      *
-     * @param baseUrl 你当时传入 Retrofit 的 BaseUrl
+     * @param baseUrl 您当时传入 Retrofit 的 BaseUrl
      * @see me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser
      */
     public synchronized void startAdvancedModel(HttpUrl baseUrl) {
@@ -288,7 +306,7 @@ public class RetrofitUrlManager {
      * 将 url 地址作为参数传入此方法, 并使用此方法返回的 url 地址进行网络请求, 则会使此 url 地址忽略掉本框架的所有更改效果
      * <p>
      * 使用场景:
-     * 比如当你使用了 {@link #setGlobalDomain(String url)} 配置了全局 BaseUrl 后, 想请求一个与全局 BaseUrl
+     * 比如当您使用了 {@link #setGlobalDomain(String url)} 配置了全局 BaseUrl 后, 想请求一个与全局 BaseUrl
      * 不同的第三方服务商地址获取图片
      *
      * @param url url 路径
@@ -301,7 +319,7 @@ public class RetrofitUrlManager {
 
     /**
      * 全局动态替换 BaseUrl, 优先级: Header中配置的 BaseUrl > 全局配置的 BaseUrl
-     * 除了作为备用的 BaseUrl, 当你项目中只有一个 BaseUrl, 但需要动态切换
+     * 除了作为备用的 BaseUrl, 当您项目中只有一个 BaseUrl, 但需要动态切换
      * 这种方式不用在每个接口方法上加入 Header, 就能实现动态切换 BaseUrl
      *
      * @param globalDomain 全局 BaseUrl
