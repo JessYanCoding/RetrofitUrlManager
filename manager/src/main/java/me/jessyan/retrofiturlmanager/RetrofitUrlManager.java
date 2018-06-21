@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser;
 import me.jessyan.retrofiturlmanager.parser.DefaultUrlParser;
 import me.jessyan.retrofiturlmanager.parser.UrlParser;
 import okhttp3.HttpUrl;
@@ -39,8 +40,29 @@ import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
  * ================================================
  * RetrofitUrlManager 以简洁的 Api, 让 Retrofit 不仅支持多 BaseUrl
  * 还可以在 App 运行时动态切换任意 BaseUrl, 在多 BaseUrl 场景下也不会影响到其他不需要切换的 BaseUrl
- * 注意: 本管理器默认的普通模式只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换, 但是以 "https:www.google.com/api" 作为 BaseUrl 就不能被替换
- * 如果想替换拥有多个 pathSegments 的 BaseUrl, 如 "https:www.google.com/api", 则需要开启高级模式 {@link #startAdvancedModel(String)}
+ * <p>
+ * 想要更深入的使用本框架必须要了解2个术语 pathSegments 和 PathSize
+ * "https://www.github.com/wiki/part?name=jess" 其中的 "/wiki" 和 "/part" 就是 pathSegment, PathSize 就是 pathSegment 的 Size
+ * 这个 Url 的 PathSize 就是 2, 可以粗略理解为域名后面跟了几个 "/" PathSize 就是几
+ * <p>
+ * 本框架分为三种模式, 普通模式 (默认)、高级模式 (需要手动开启)、超级模式 (需要手动开启)
+ * <p>
+ * 普通模式:
+ * 只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换, 但是以 "https:www.google.com/api" 作为 BaseUrl 还是只能替换其中的域名 "https:www.google.com"
+ * <p>
+ * 高级模式:
+ * 可以替换拥有多个 pathSegments 的 BaseUrl, 如 "https:www.google.com/api", 需要手动开启高级模式 {@link #startAdvancedModel(String)}
+ * 详细替换规则可以查看 {@link AdvancedUrlParser}
+ * <p>
+ * 超级模式:
+ * 超级模式属于高级模式的加强版, 优先级高于高级模式, 在高级模式中, 需要传入一个 BaseUrl (您传入 Retrofit 的 BaseUrl) 作为被替换的基准
+ * 如这个传入的 BaseUrl 为 "https://www.github.com/wiki/part" (PathSize = 2), 那框架会将所有需要被替换的 Url 中的 域名 以及 域名 后面的前两个 pathSegments
+ * 使用您传入 {@link RetrofitUrlManager#putDomain(String, String)} 方法的 Url 替换掉
+ * 但如果突然有一小部分的 Url 只想将 "https://www.github.com/wiki" (PathSize = 1) 替换掉, 后面的 pathSegment '/part' 想被保留下来
+ * 这时项目中就出现了多个 PathSize 不同的需要被替换的 BaseUrl
+ * 使用高级模式实现这种需求略微麻烦, 所以我创建了超级模式, 使 RetrofitUrlManager 可以从容应对各种复杂的需求
+ * <p>
+ * 超级模式也需要手动开启, 但与高级模式不同的是, 开启超级模式并不需要调用 API, 只需要在 Url 中加入 {@link #IDENTIFICATION_PATH_SIZE} + PathSize
  * <p>
  * Created by JessYan on 17/07/2017 14:29
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
@@ -53,7 +75,14 @@ public class RetrofitUrlManager {
     private static final String DOMAIN_NAME = "Domain-Name";
     private static final String GLOBAL_DOMAIN_NAME = "me.jessyan.retrofiturlmanager.globalDomainName";
     public static final String DOMAIN_NAME_HEADER = DOMAIN_NAME + ": ";
-    public static final String IDENTIFICATION_IGNORE = "#url_ignore";//如果在 Url 地址中加入此标识符, 管理器将不会对此 Url 进行任何切换 BaseUrl 的操作
+    /**
+     * 如果在 Url 地址中加入此标识符, 框架将不会对此 Url 进行任何切换 BaseUrl 的操作
+     */
+    public static final String IDENTIFICATION_IGNORE = "#url_ignore";
+    /**
+     * 如果在 Url 地址中加入此标识符, 意味着您想对此 Url 开启超级模式, 框架会将 '=' 后面的数字作为 PathSize, 来确认最终需要被超级模式替换的 BaseUrl
+     */
+    public static final String IDENTIFICATION_PATH_SIZE = "#baseurl_path_size=";
 
     private HttpUrl baseUrl;
     private int pathSize;
@@ -77,7 +106,7 @@ public class RetrofitUrlManager {
 
 
     private RetrofitUrlManager() {
-        if (!DEPENDENCY_OKHTTP) { //使用本管理器必须依赖 Okhttp
+        if (!DEPENDENCY_OKHTTP) { //使用本框架必须依赖 Okhttp
             throw new IllegalStateException("Must be dependency Okhttp");
         }
         UrlParser urlParser = new DefaultUrlParser();
@@ -86,7 +115,7 @@ public class RetrofitUrlManager {
         this.mInterceptor = new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                if (!isRun()) // 可以在 App 运行时, 随时通过 setRun(false) 来结束本管理器的运行
+                if (!isRun()) // 可以在 App 运行时, 随时通过 setRun(false) 来结束本框架的运行
                     return chain.proceed(chain.request());
                 return chain.proceed(processRequest(chain.request()));
             }
@@ -102,7 +131,7 @@ public class RetrofitUrlManager {
     }
 
     /**
-     * 将 {@link OkHttpClient.Builder} 传入, 配置一些本管理器需要的参数
+     * 将 {@link OkHttpClient.Builder} 传入, 配置一些本框架需要的参数
      *
      * @param builder {@link OkHttpClient.Builder}
      * @return {@link OkHttpClient.Builder}
@@ -125,7 +154,7 @@ public class RetrofitUrlManager {
         Request.Builder newBuilder = request.newBuilder();
 
         String url = request.url().toString();
-        //如果 Url 地址中包含 IDENTIFICATION_IGNORE 标识符, 管理器将不会对此 Url 进行任何切换 BaseUrl 的操作
+        //如果 Url 地址中包含 IDENTIFICATION_IGNORE 标识符, 框架将不会对此 Url 进行任何切换 BaseUrl 的操作
         if (url.contains(IDENTIFICATION_IGNORE)) {
             return pruneIdentification(newBuilder, url);
         }
@@ -200,7 +229,7 @@ public class RetrofitUrlManager {
     }
 
     /**
-     * 管理器是否在运行
+     * 框架是否在运行
      *
      * @return {@code true} 为正在运行, {@code false} 为未运行
      */
@@ -209,7 +238,7 @@ public class RetrofitUrlManager {
     }
 
     /**
-     * 控制管理器是否运行, 在每个域名地址都已经确定, 不需要再动态更改时可设置为 {@code false}
+     * 控制框架是否运行, 在每个域名地址都已经确定, 不需要再动态更改时可设置为 {@code false}
      *
      * @param run {@code true} 为正在运行, {@code false} 为未运行
      */
