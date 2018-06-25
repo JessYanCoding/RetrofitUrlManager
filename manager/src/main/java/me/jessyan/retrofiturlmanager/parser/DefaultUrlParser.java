@@ -18,6 +18,8 @@ package me.jessyan.retrofiturlmanager.parser;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.HttpUrl;
 
+import static me.jessyan.retrofiturlmanager.RetrofitUrlManager.IDENTIFICATION_PATH_SIZE;
+
 /**
  * ================================================
  * 默认解析器, 可根据自定义策略选择不同的解析器
@@ -36,6 +38,7 @@ public class DefaultUrlParser implements UrlParser {
 
     private UrlParser mDomainUrlParser;
     private volatile UrlParser mAdvancedUrlParser;
+    private volatile UrlParser mSuperUrlParser;
     private RetrofitUrlManager mRetrofitUrlManager;
 
     @Override
@@ -48,6 +51,18 @@ public class DefaultUrlParser implements UrlParser {
     @Override
     public HttpUrl parseUrl(HttpUrl domainUrl, HttpUrl url) {
         if (null == domainUrl) return url;
+
+        if (url.toString().contains(IDENTIFICATION_PATH_SIZE)) {
+            if (mSuperUrlParser == null) {
+                synchronized (this) {
+                    if (mSuperUrlParser == null) {
+                        mSuperUrlParser = new SuperUrlParser();
+                        mSuperUrlParser.init(mRetrofitUrlManager);
+                    }
+                }
+            }
+            return mSuperUrlParser.parseUrl(domainUrl, url);
+        }
 
         //如果是高级模式则使用高级解析器
         if (mRetrofitUrlManager.isAdvancedModel()) {
