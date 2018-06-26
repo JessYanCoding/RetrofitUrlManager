@@ -26,6 +26,8 @@ import java.util.Map;
 
 import me.jessyan.retrofiturlmanager.parser.AdvancedUrlParser;
 import me.jessyan.retrofiturlmanager.parser.DefaultUrlParser;
+import me.jessyan.retrofiturlmanager.parser.DomainUrlParser;
+import me.jessyan.retrofiturlmanager.parser.SuperUrlParser;
 import me.jessyan.retrofiturlmanager.parser.UrlParser;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -48,7 +50,9 @@ import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
  * 本框架分为三种模式, 普通模式 (默认)、高级模式 (需要手动开启)、超级模式 (需要手动开启)
  * <p>
  * 普通模式:
- * 普通模式只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换, 但是以 "https:www.google.com/api" 作为 BaseUrl 还是只能替换其中的域名 "https:www.google.com"
+ * 普通模式只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换
+ * 但是以 "https:www.google.com/api" 作为 BaseUrl 还是只能替换其中的域名 "https:www.google.com"
+ * 详细替换规则可以查看 {@link DomainUrlParser}
  * <p>
  * 高级模式:
  * 高级模式只能替换 {@link #startAdvancedModel(String)} 中传入的 BaseUrl, 但可以替换拥有多个 pathSegments 的 BaseUrl
@@ -56,6 +60,7 @@ import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
  * 详细替换规则可以查看 {@link AdvancedUrlParser}
  * <p>
  * 超级模式:
+ * 详细替换规则可以查看 {@link SuperUrlParser}
  * 超级模式属于高级模式的加强版, 优先级高于高级模式, 在高级模式中, 需要传入一个 BaseUrl (您传入 Retrofit 的 BaseUrl) 作为被替换的基准
  * 如这个传入的 BaseUrl 为 "https://www.github.com/wiki/part" (PathSize = 2), 那框架会将所有需要被替换的 Url 中的 域名 以及 域名 后面的前两个 pathSegments
  * 使用您传入 {@link RetrofitUrlManager#putDomain(String, String)} 方法的 Url 替换掉
@@ -71,7 +76,7 @@ import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
  * 普通模式 (只能替换域名) < 高级模式 (只能替换 {@link #startAdvancedModel(String)} 中传入的 BaseUrl) < 超级模式 (每个 Url 都可以随意指定可被替换的 BaseUrl, pathSize 随意变换)
  * <p>
  * 三种模式在使用上的复杂程度排名, 从小到大依次是:
- * 普通模式 (无需做过多配置) < 高级模式 (初始化时调用一次 {@link #startAdvancedModel(String)} 即可) < 超级模式 (每个需要被替换 BaseUrl 的 Url 中都需要加入 {@link #IDENTIFICATION_PATH_SIZE} + PathSize)
+ * 普通模式 (无需做过多配置) < 高级模式 (App 初始化时调用一次 {@link #startAdvancedModel(String)} 即可) < 超级模式 (每个需要被替换 BaseUrl 的 Url 中都需要加入 {@link #IDENTIFICATION_PATH_SIZE} + PathSize)
  * <p>
  * 由此可见，自由度越强, 操作也越复杂, 所以可以根据自己的需求选择不同的模式, 并且也可以在需求变化时随意升级或降级这三种模式
  * <p>
