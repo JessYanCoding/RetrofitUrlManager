@@ -35,9 +35,32 @@ import static me.jessyan.retrofiturlmanager.RetrofitUrlManager.IDENTIFICATION_PA
  * 使用您传入 {@link RetrofitUrlManager#putDomain(String, String)} 方法的 Url 替换掉
  * 但如果突然有一小部分的 Url 只想将 "https://www.github.com/wiki" (PathSize = 1) 替换掉, 后面的 pathSegment '/part' 想被保留下来
  * 这时项目中就出现了多个 PathSize 不同的需要被替换的 BaseUrl
- * 使用高级模式实现这种需求略微麻烦, 所以我创建了超级模式, 使 RetrofitUrlManager 可以从容应对各种复杂的需求
+ * <p>
+ * 使用高级模式实现这种需求略显麻烦, 所以我创建了超级模式, 让每一个 Url 都可以随意指定不同的 BaseUrl (PathSize 自己定) 作为被替换的基准
+ * 使 RetrofitUrlManager 可以从容应对各种复杂的需求
  * <p>
  * 超级模式也需要手动开启, 但与高级模式不同的是, 开启超级模式并不需要调用 API, 只需要在 Url 中加入 {@link RetrofitUrlManager#IDENTIFICATION_PATH_SIZE} + PathSize
+ * <p>
+ * 替换规则如下:
+ * 1.
+ * 旧 URL 地址为 https://www.github.com/wiki/part#baseurl_path_size=1, #baseurl_path_size=1 表示其中 BaseUrl 为 https://www.github.com/wiki
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/part
+ * <p>
+ * 2.
+ * 旧 URL 地址为 https://www.github.com/wiki/part#baseurl_path_size=1, #baseurl_path_size=1 表示其中 BaseUrl 为 https://www.github.com/wiki
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/part
+ * <p>
+ * 3.
+ * 旧 URL 地址为 https://www.github.com/wiki/part#baseurl_path_size=0, #baseurl_path_size=0 表示其中 BaseUrl 为 https://www.github.com
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/wiki/part
+ * <p>
+ * 4.
+ * 旧 URL 地址为 https://www.github.com/wiki/part/issues/1#baseurl_path_size=3, #baseurl_path_size=3 表示其中 BaseUrl 为 https://www.github.com/wiki/part/issues
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/1
  *
  * @see UrlParser
  * Created by JessYan on 2018/6/21 16:41
@@ -80,7 +103,7 @@ public class SuperUrlParser implements UrlParser {
                 }
             } else if (url.pathSize() < pathSize) {
                 throw new IllegalArgumentException(String.format(
-                        "Your final path is %s, the pathSize = %d, but the #baseurl_path_size = %d, #baseurl_path_size must be less than or equal to pathSize of the final path" ,
+                        "Your final path is %s, the pathSize = %d, but the #baseurl_path_size = %d, #baseurl_path_size must be less than or equal to pathSize of the final path",
                         url.scheme() + "://" + url.host() + url.encodedPath(), url.pathSize(), pathSize));
             }
 
@@ -108,7 +131,7 @@ public class SuperUrlParser implements UrlParser {
                 + PathSize;
     }
 
-    private int resolvePathSize(HttpUrl httpUrl, HttpUrl.Builder builder){
+    private int resolvePathSize(HttpUrl httpUrl, HttpUrl.Builder builder) {
         String fragment = httpUrl.fragment();
 
         int pathSize = 0;
@@ -144,7 +167,7 @@ public class SuperUrlParser implements UrlParser {
                 }
             }
         }
-        if (TextUtils.isEmpty(newFragment.toString())){
+        if (TextUtils.isEmpty(newFragment.toString())) {
             builder.fragment(null);
         } else {
             builder.fragment(newFragment.toString());
