@@ -31,18 +31,21 @@ import okhttp3.HttpUrl;
  * <p>
  * 比如:
  * 1.
- * 旧 URL 地址为 https://www.github.com/wiki/part, 其中 BaseUrl 为 https://www.github.com/wiki
- * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 旧 URL 地址为 https://www.github.com/wiki/part, 您在 App 初始化时传入 {@link RetrofitUrlManager#startAdvancedModel(String)}
+ * 的 BaseUrl 为 https://www.github.com/wiki
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)} 方法传入的 URL 地址是 https://www.google.com/api
  * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/part
  * <p>
  * 2.
- * 旧 URL 地址为 https://www.github.com/wiki/part, 其中 BaseUrl 为 https://www.github.com/wiki
- * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com
+ * 旧 URL 地址为 https://www.github.com/wiki/part, 您在 App 初始化时传入 {@link RetrofitUrlManager#startAdvancedModel(String)}
+ * 的 BaseUrl 为 https://www.github.com/wiki
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)} 方法传入的 URL 地址是 https://www.google.com
  * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/part
  * <p>
  * 3.
- * 旧 URL 地址为 https://www.github.com/wiki/part, 其中 BaseUrl 为 https://www.github.com
- * 您调用 {@link RetrofitUrlManager#putDomain(String, String)}方法传入的 URL 地址是 https://www.google.com/api
+ * 旧 URL 地址为 https://www.github.com/wiki/part, 您在 App 初始化时传入 {@link RetrofitUrlManager#startAdvancedModel(String)}
+ * 的 BaseUrl 为 https://www.github.com
+ * 您调用 {@link RetrofitUrlManager#putDomain(String, String)} 方法传入的 URL 地址是 https://www.google.com/api
  * 经过本解析器解析后生成的新 URL 地址为 http://www.google.com/api/wiki/part
  * <p>
  * 解析器会将 BaseUrl 全部替换成您传入的 Url 地址
