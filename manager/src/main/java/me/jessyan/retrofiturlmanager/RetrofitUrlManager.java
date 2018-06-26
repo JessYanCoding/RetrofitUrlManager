@@ -48,10 +48,11 @@ import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
  * 本框架分为三种模式, 普通模式 (默认)、高级模式 (需要手动开启)、超级模式 (需要手动开启)
  * <p>
  * 普通模式:
- * 只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换, 但是以 "https:www.google.com/api" 作为 BaseUrl 还是只能替换其中的域名 "https:www.google.com"
+ * 普通模式只能替换域名, 比如使用 "https:www.google.com" 作为 Retrofit 的 BaseUrl 可以被替换, 但是以 "https:www.google.com/api" 作为 BaseUrl 还是只能替换其中的域名 "https:www.google.com"
  * <p>
  * 高级模式:
- * 可以替换拥有多个 pathSegments 的 BaseUrl, 如 "https:www.google.com/api", 需要手动开启高级模式 {@link #startAdvancedModel(String)}
+ * 高级模式只能替换 {@link #startAdvancedModel(String)} 中传入的 BaseUrl, 但可以替换拥有多个 pathSegments 的 BaseUrl
+ * 如 "https:www.google.com/api", 需要手动开启高级模式 {@link #startAdvancedModel(String)}
  * 详细替换规则可以查看 {@link AdvancedUrlParser}
  * <p>
  * 超级模式:
@@ -60,9 +61,19 @@ import static me.jessyan.retrofiturlmanager.Utils.checkUrl;
  * 使用您传入 {@link RetrofitUrlManager#putDomain(String, String)} 方法的 Url 替换掉
  * 但如果突然有一小部分的 Url 只想将 "https://www.github.com/wiki" (PathSize = 1) 替换掉, 后面的 pathSegment '/part' 想被保留下来
  * 这时项目中就出现了多个 PathSize 不同的需要被替换的 BaseUrl
- * 使用高级模式实现这种需求略微麻烦, 所以我创建了超级模式, 使 RetrofitUrlManager 可以从容应对各种复杂的需求
+ * <p>
+ * 使用高级模式实现这种需求略显麻烦, 所以我创建了超级模式, 让每一个 Url 都可以随意指定不同的 BaseUrl (PathSize 自己定) 作为被替换的基准
+ * 使 RetrofitUrlManager 可以从容应对各种复杂的需求
  * <p>
  * 超级模式也需要手动开启, 但与高级模式不同的是, 开启超级模式并不需要调用 API, 只需要在 Url 中加入 {@link #IDENTIFICATION_PATH_SIZE} + PathSize
+ * <p>
+ * 至此三种模式替换 BaseUrl 的自由程度 (可扩展性) 排名, 从小到大依次是:
+ * 普通模式 (只能替换域名) < 高级模式 (只能替换 {@link #startAdvancedModel(String)} 中传入的 BaseUrl) < 超级模式 (每个 Url 都可以随意指定可被替换的 BaseUrl, pathSize 随意变换)
+ * <p>
+ * 三种模式在使用上的复杂程度排名, 从小到大依次是:
+ * 普通模式 (无需做过多配置) < 高级模式 (初始化时调用一次 {@link #startAdvancedModel(String)} 即可) < 超级模式 (每个需要被替换 BaseUrl 的 Url 中都需要加入 {@link #IDENTIFICATION_PATH_SIZE} + PathSize)
+ * <p>
+ * 由此可见，自由度越强, 操作也越复杂, 所以可以根据自己的需求选择不同的模式, 并且也可以在需求变化时随意升级或降级这三种模式
  * <p>
  * Created by JessYan on 17/07/2017 14:29
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
@@ -332,18 +343,33 @@ public class RetrofitUrlManager {
     }
 
     /**
-     * 将 url 地址作为参数传入此方法, 并使用此方法返回的 url 地址进行网络请求, 则会使此 url 地址忽略掉本框架的所有更改效果
+     * 将 url 地址作为参数传入此方法, 并使用此方法返回的 Url 地址进行网络请求, 则会使此 Url 地址忽略掉本框架的所有更改效果
      * <p>
      * 使用场景:
      * 比如当您使用了 {@link #setGlobalDomain(String url)} 配置了全局 BaseUrl 后, 想请求一个与全局 BaseUrl
      * 不同的第三方服务商地址获取图片
      *
-     * @param url url 路径
-     * @return 处理后的 url 路径
+     * @param url Url 地址
+     * @return 处理后的 Url 地址
      */
     public String setUrlNotChange(String url) {
         checkNotNull(url, "url cannot be null");
         return url + IDENTIFICATION_IGNORE;
+    }
+
+    /**
+     * 将 url 地址和 pathSize 作为参数传入此方法, 并使用此方法返回的 Url 地址进行网络请求, 则会使此 Url 地址使用超级模式
+     * <p>
+     * 什么是超级模式? 请看 {@link RetrofitUrlManager} 上面的注释
+     *
+     * @param url      Url 地址
+     * @param pathSize pathSize
+     * @return 处理后的 Url 地址
+     */
+    public String setPathSizeOfUrl(String url, int pathSize) {
+        checkNotNull(url, "url cannot be null");
+        if (pathSize < 0) throw new IllegalArgumentException("pathSize must be >= 0");
+        return url + IDENTIFICATION_PATH_SIZE + pathSize;
     }
 
     /**
