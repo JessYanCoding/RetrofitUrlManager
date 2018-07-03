@@ -1,47 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="Retrofit : 1          BaseUrl : 4" />
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Default url: http://jessyan.me" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GlobalUrl:" />
-
-            <EditText
-                android:id="@+id/et_global_url"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@null"
-                android:text="http://www.taobao.com"
-                android:textSize="15sp"
-                android:textStyle="italic" />
-        </LinearLayout>
+            android:padding="5dp"
+            android:text="Retrofit : 1          BaseUrl : 4"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,162 +26,213 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="btnRequestDefault"
-                android:text="request" />
+                android:onClick="startAdvancedModel"
+                android:text="start_advanced_model"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="btnSetGlobalUrl"
-                android:text="set_global" />
+                android:onClick="urlNotChange"
+                android:text="url_not_change"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Default BaseUrl: http://jessyan.me"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Global BaseUrl:"/>
+
+                <EditText
+                    android:id="@+id/et_global_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@null"
+                    android:text="http://www.taobao.com"
+                    android:textSize="15sp"
+                    android:textStyle="italic"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnRequestDefault"
+                    android:text="request"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnSetGlobalUrl"
+                    android:text="set_global"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnRmoveGlobalUrl"
+                    android:text="remove_global"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:text=" @GET('/users') \nObservable\u003cResponseBody\u003e getUsers(@Query('since') int lastIdQueried, @Query('per_page') int perPage);"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BaseUrl :"/>
+
+                <EditText
+                    android:id="@+id/et_url1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@null"
+                    android:text="https://api.github.com"
+                    android:textSize="15sp"
+                    android:textStyle="italic"/>
+            </LinearLayout>
 
             <Button
+                android:id="@+id/bt_request1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="btnRmoveGlobalUrl"
-                android:text="remove_global" />
+                android:layout_gravity="center_horizontal"
+                android:text="request"/>
+
         </LinearLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:paddingLeft="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lineSpacingExtra="2dp"
-            android:text=" @GET('/users') \nObservable\u003cResponseBody\u003e getUsers(@Query('since') int lastIdQueried, @Query('per_page') int perPage);"
-            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BaseUrl :" />
+                android:lineSpacingExtra="2dp"
+                android:text=" @GET('/v2/book/{id}') \nObservable\u003cResponseBody\u003e getBook(@Path('id') int id);"
+                android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/et_url1"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@null"
-                android:text="https://api.github.com"
-                android:textSize="15sp"
-                android:textStyle="italic" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BaseUrl :"/>
+
+                <EditText
+                    android:id="@+id/et_url3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@null"
+                    android:text="https://api.douban.com"
+                    android:textSize="15sp"
+                    android:textStyle="italic"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bt_request3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="request"/>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/bt_request1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="request" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:paddingLeft="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lineSpacingExtra="2dp"
-            android:text=" @GET('/api/data/Android/{size}/{page}') \nObservable\u003cResponseBody\u003e getData(@Path('size') int size, @Path('page') int page);"
-            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BaseUrl :" />
+                android:lineSpacingExtra="2dp"
+                android:text=" @GET('/api/data/Android/{size}/{page}') \nObservable\u003cResponseBody\u003e getData(@Path('size') int size, @Path('page') int page);"
+                android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/et_url2"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@null"
-                android:text="http://gank.io"
-                android:textSize="15sp"
-                android:textStyle="italic" />
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
 
-        <Button
-            android:id="@+id/bt_request2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="request" />
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BaseUrl :"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:paddingLeft="5dp">
+                <EditText
+                    android:id="@+id/et_url2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@null"
+                    android:text="http://gank.io"
+                    android:textSize="15sp"
+                    android:textStyle="italic"/>
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lineSpacingExtra="2dp"
-            android:text=" @GET('/v2/book/{id}') \nObservable\u003cResponseBody\u003e getBook(@Path('id') int id);"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
-
-            <TextView
+            <Button
+                android:id="@+id/bt_request2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BaseUrl :" />
-
-            <EditText
-                android:id="@+id/et_url3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@null"
-                android:text="https://api.douban.com"
-                android:textSize="15sp"
-                android:textStyle="italic" />
+                android:layout_gravity="center_horizontal"
+                android:text="super_request"/>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/bt_request3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="request" />
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

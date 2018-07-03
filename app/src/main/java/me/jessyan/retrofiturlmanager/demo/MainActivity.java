@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         this.mListener = new ChangeListener();
         //如果有需要可以注册监听器,当一个 Url 的 BaseUrl 被新的 Url 替代,则会回调这个监听器,调用时间是在接口请求服务器之前
         RetrofitUrlManager.getInstance().registerUrlChangeListener(mListener);
-        //如果你已经确定了最终的 BaseUrl ,不需要再动态切换 BaseUrl, 请 RetrofitUrlManager.getInstance().setRun(false);
+        //如果您已经确定了最终的 BaseUrl ,不需要再动态切换 BaseUrl, 请 RetrofitUrlManager.getInstance().setRun(false);
 
         findViewById(R.id.bt_request1).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,6 +198,37 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    public void startAdvancedModel(View view){
+        final EditText editText = new EditText(MainActivity.this);
+        editText.setBackgroundDrawable(null);
+        editText.setText("http://jessyan.me/1");
+        editText.setPadding(80,30,0,0);
+        //什么是 pathSegment? 建议先看看最上面的类注释!
+        new AlertDialog.Builder(this)
+                .setTitle("增加或减少下面的 pathSegment, 看看替换后的 Url 有什么不同?")
+                .setView(editText)
+                .setCancelable(true)
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        RetrofitUrlManager.getInstance().startAdvancedModel(editText.getText().toString());
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    public void urlNotChange(View view){
+        showResult("使用本框架的全局 BaseUrl 后, 默认整个项目的所有 Url 都会被全局 BaseUrl 替换, 但是在实际开发中又需要某些 Url 保持原样不被全局 BaseUrl 替换掉, 比如请求某些固定的图片下载地址时, 这时在这个 Url 地址尾部加上 RetrofitUrlManager.IDENTIFICATION_IGNORE 即可避免被全局 BaseUrl 替换, 可以使用 RetrofitUrlManager.getInstance().setUrlNotChange(url) 方法, 该方法返回的 Url 已帮您自动在 Url 尾部加上该标志!");
+    }
+
     // 请求默认 BaseUrl，请求的接口没有配置 DomainHeader，所以只受全局 BaseUrl的影响
     public void btnRequestDefault(View view) {
         NetWorkManager
@@ -210,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 设置全局替换的 BaseUrl
     public void btnSetGlobalUrl(View view) {
-        //当你项目中只有一个 BaseUrl, 但需要动态切换 BaseUrl 时, 全局 BaseUrl 显得非常方便
+        //当您项目中只有一个 BaseUrl, 但需要动态切换 BaseUrl 时, 全局 BaseUrl 显得非常方便
         //使用 RetrofitUrlManager.getInstance().setUrlNotChange(url); 方法处理过的 url 地址进行网络请求
         //则可以使此 url 地址忽略掉本框架的所有更改效果
         HttpUrl httpUrl = RetrofitUrlManager.getInstance().getGlobalDomain();
