@@ -221,7 +221,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:background="@null"
-                    android:text="http://gank.io"
+                    android:text="http://gank.io/api/data"
                     android:textSize="15sp"
                     android:textStyle="italic"/>
             </LinearLayout>

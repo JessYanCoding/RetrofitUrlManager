@@ -151,6 +151,9 @@ public class MainActivity extends AppCompatActivity {
                 if (httpUrl == null || !httpUrl.toString().equals(mUrl2.getText().toString())) { //可以在 App 运行时随意切换某个接口的 BaseUrl
                     RetrofitUrlManager.getInstance().putDomain(GANK_DOMAIN_NAME, mUrl2.getText().toString());
                 }
+                /**
+                 * 使用超级模式请求, 详细注释请查看 {@link me.jessyan.retrofiturlmanager.demo.api.TwoApiService#getData(int, int)}
+                 */
                 NetWorkManager
                         .getInstance()
                         .getTwoApiService()
@@ -199,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 什么是高级模式? 什么是 pathSegments? 建议先看看最上面的类注释! {@link MainActivity}
+     * 什么是高级模式? 什么是 pathSegment? 建议先看看最上面的类注释! {@link MainActivity}
      */
     public void startAdvancedModel(View view) {
         final EditText editText = new EditText(MainActivity.this);
@@ -207,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         editText.setText("http://jessyan.me/1");
         editText.setPadding(80, 30, 0, 0);
         new AlertDialog.Builder(this)
-                .setTitle("增加或减少下面的 pathSegments, 看看替换后的 Url 有什么不同?")
+                .setTitle("增加或减少下面的 pathSegment, 看看替换后的 Url 有什么不同?")
                 .setView(editText)
                 .setCancelable(true)
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
