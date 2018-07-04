@@ -86,7 +86,7 @@ import static me.jessyan.retrofiturlmanager.demo.api.Api.GITHUB_DOMAIN_NAME;
  * 普通模式 (只能替换域名) < 高级模式 (只能替换 {@link RetrofitUrlManager#startAdvancedModel(String)} 中传入的 BaseUrl) < 超级模式 (每个 Url 都可以随意指定可被替换的 BaseUrl, pathSize 随意变换)
  * <p>
  * 三种模式在使用上的复杂程度排名, 从小到大依次是:
- * 普通模式 (无需做过多配置) < 高级模式 (App 初始化时调用一次 {@link RetrofitUrlManager#startAdvancedModel(String)} 即可) < 超级模式 (每个需要被替换 BaseUrl 的 Url 中都需要加入 {@link #IDENTIFICATION_PATH_SIZE} + PathSize)
+ * 普通模式 (无需做过多配置) < 高级模式 (App 初始化时调用一次 {@link RetrofitUrlManager#startAdvancedModel(String)} 即可) < 超级模式 (每个需要被替换 BaseUrl 的 Url 中都需要加入 {@link RetrofitUrlManager#IDENTIFICATION_PATH_SIZE} + PathSize)
  * <p>
  * 由此可见，自由度越强, 操作也越复杂, 所以可以根据自己的需求选择不同的模式, 并且也可以在需求变化时随意升级或降级这三种模式
  * <p>
@@ -198,14 +198,16 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void startAdvancedModel(View view){
+    /**
+     * 什么是高级模式? 什么是 pathSegments? 建议先看看最上面的类注释! {@link MainActivity}
+     */
+    public void startAdvancedModel(View view) {
         final EditText editText = new EditText(MainActivity.this);
         editText.setBackgroundDrawable(null);
         editText.setText("http://jessyan.me/1");
-        editText.setPadding(80,30,0,0);
-        //什么是 pathSegment? 建议先看看最上面的类注释!
+        editText.setPadding(80, 30, 0, 0);
         new AlertDialog.Builder(this)
-                .setTitle("增加或减少下面的 pathSegment, 看看替换后的 Url 有什么不同?")
+                .setTitle("增加或减少下面的 pathSegments, 看看替换后的 Url 有什么不同?")
                 .setView(editText)
                 .setCancelable(true)
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -225,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void urlNotChange(View view){
+    public void urlNotChange(View view) {
         showResult("使用本框架的全局 BaseUrl 后, 默认整个项目的所有 Url 都会被全局 BaseUrl 替换, 但是在实际开发中又需要某些 Url 保持原样不被全局 BaseUrl 替换掉, 比如请求某些固定的图片下载地址时, 这时在这个 Url 地址尾部加上 RetrofitUrlManager.IDENTIFICATION_IGNORE 即可避免被全局 BaseUrl 替换, 可以使用 RetrofitUrlManager.getInstance().setUrlNotChange(url) 方法, 该方法返回的 Url 已帮您自动在 Url 尾部加上该标志!");
     }
 
