@@ -15,7 +15,9 @@
 ![overview](art/overview.gif)
 
 ## Notice
-[**Framework analysis**](http://www.jianshu.com/p/2919bdb8d09a)
+[**Framework analysis 1**](http://www.jianshu.com/p/2919bdb8d09a)
+
+[**Framework analysis 2**](https://www.jianshu.com/p/35a8959c2f86)
 
 [**More complete sample**](https://github.com/JessYanCoding/ArmsComponent)
 
