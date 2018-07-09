@@ -16,7 +16,9 @@
 以最简洁的 **Api** 让 **Retrofit** 同时支持多个 **BaseUrl** 以及动态改变 **BaseUrl**.
 
 ## Notice
-[**框架的分析和思路**](http://www.jianshu.com/p/2919bdb8d09a)
+[**框架的分析和思路 (一)**](http://www.jianshu.com/p/2919bdb8d09a)
+
+[**框架的分析和思路 (二)**](https://www.jianshu.com/p/35a8959c2f86)
 
 [**更完整的 Sample**](https://github.com/JessYanCoding/ArmsComponent)
 
