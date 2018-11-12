@@ -57,9 +57,6 @@
 
 ```
 
-## Donate
-![alipay](https://raw.githubusercontent.com/JessYanCoding/MVPArms/master/image/pay_alipay.jpg) ![](https://raw.githubusercontent.com/JessYanCoding/MVPArms/master/image/pay_wxpay.jpg)
-
 ## About Me
 * **Email**: <jess.yan.effort@gmail.com>
 * **Home**: <http://jessyan.me>
